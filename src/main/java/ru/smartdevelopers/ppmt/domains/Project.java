@@ -10,10 +10,10 @@ public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
-    private String Title;
-    private Date CreatedAt;
-    private Date CompleteAt;
+    private Long id;
+    private String title;
+    private Date createdAt;
+    private Date completeAt;
 
     // When will be created users
 //    @ManyToOne(fetch = FetchType.LAZY)
@@ -21,34 +21,34 @@ public class Project {
 //    private User createdBy;
 
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Long id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getTitle() {
-        return Title;
+        return title;
     }
 
     public void setTitle(String title) {
-        Title = title;
+        this.title = title;
     }
 
     public Date getCreatedAt() {
-        return CreatedAt;
+        return createdAt;
     }
 
     public void setCreatedAt(Date createdAt) {
-        CreatedAt = createdAt;
+        this.createdAt = createdAt;
     }
 
     public Date getCompleteAt() {
-        return CompleteAt;
+        return completeAt;
     }
 
     public void setCompleteAt(Date completeAt) {
-        CompleteAt = completeAt;
+        this.completeAt = completeAt;
     }
 }
