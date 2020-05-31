@@ -45,10 +45,10 @@ public class UserControllers {
         this.jwtProvider = jwtProvider;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/registration")
     public ResponseEntity<User> register(@RequestBody RegisterUserRequest user) throws Exception {
         User requestUser = user.mapToUser();
-        User createdUser = userService.create(requestUser);
+        User createdUser = userService.save(requestUser);
         return new ResponseEntity<User>(createdUser, HttpStatus.CREATED);
     }
 

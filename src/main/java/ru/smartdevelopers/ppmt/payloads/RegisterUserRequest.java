@@ -5,7 +5,7 @@ import ru.smartdevelopers.ppmt.domains.User;
 public class RegisterUserRequest {
 
     private String username;
-    private String fullname;
+    private String fullName;
     private String password;
     private String confirmPassword;
 
@@ -17,12 +17,12 @@ public class RegisterUserRequest {
         this.username = username;
     }
 
-    public String getFullname() {
-        return fullname;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getPassword() {
@@ -44,7 +44,7 @@ public class RegisterUserRequest {
     public User mapToUser() throws Exception {
         User user = new User();
         user.setUsername(this.getUsername());
-        user.setFullname(this.getFullname());
+        user.setFullName(this.getFullName());
         user.setPassword(this.getPassword());
         if (!this.password.equals(this.confirmPassword)) {
             throw new Exception("Password and confirm password not match");
