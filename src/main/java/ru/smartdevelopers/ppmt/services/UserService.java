@@ -1,29 +1,34 @@
 package ru.smartdevelopers.ppmt.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.smartdevelopers.ppmt.domains.User;
-import ru.smartdevelopers.ppmt.repositories.UserRepositories;
+import ru.smartdevelopers.ppmt.repositories.UserRepository;
 
 @Service
 public class UserService {
 
-    private UserRepositories userRepositories;
+    private UserRepository userRepository;
+
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public void setUserRepositories(UserRepositories userRepositories) {
-        this.userRepositories = userRepositories;
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public User create(User user) {
-        return userRepositories.save(user);
+    @Autowired
+    public void setBCryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public User update(User user) {
-        return userRepositories.save(user);
+    public User save(User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
     }
 
     public void delete(User user) {
-        userRepositories.delete(user);
+        userRepository.delete(user);
     }
 }
