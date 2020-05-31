@@ -4,10 +4,12 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import ru.smartdevelopers.ppmt.domains.Project;
 
+import java.util.Optional;
+
 @Repository
 public interface ProjectRepository  extends CrudRepository <Project, Long> {
 
-    Project findById (String projectId);
+    Optional<Project> findById (Long id);
 
     @Override
     Iterable <Project> findAll();

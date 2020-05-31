@@ -1,5 +1,7 @@
 package ru.smartdevelopers.ppmt.domains;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,9 +18,17 @@ public class Project {
     private Date completeAt;
 
     // When will be created users
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JsonIgnore
-//    private User createdBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    private User createdBy;
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
 
     public Long getId() {
         return id;
