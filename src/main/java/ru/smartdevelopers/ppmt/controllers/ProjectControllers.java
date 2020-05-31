@@ -1,25 +1,24 @@
 package ru.smartdevelopers.ppmt.controllers;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.smartdevelopers.ppmt.domains.Project;
-import ru.smartdevelopers.ppmt.repositories.ProjectRepository;
 import ru.smartdevelopers.ppmt.services.ProjectService;
-
 import java.security.Principal;
 
 @RestController
 @RequestMapping ("/api/project")
 public class ProjectControllers {
 
-    @Autowired
-    ProjectService projectService;
+    private ProjectService projectService;
 
     @Autowired
+    public void setProjectService(ProjectService projectService) {
+        this.projectService = projectService;
+    }
 
     @GetMapping ("/all")
     public Iterable<Project> getAllProject (Principal principal){

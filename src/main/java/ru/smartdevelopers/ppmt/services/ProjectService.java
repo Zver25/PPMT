@@ -10,16 +10,22 @@ import ru.smartdevelopers.ppmt.repositories.UserRepository;
 @Service
 public class ProjectService {
 
-    @Autowired
+
     private ProjectRepository projectRepository;
 
-    @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    public void setProjectRepository(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
+    }
+
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public Project saveOrUpdateProject (Project project, String username){
-
-
 
         return projectRepository.save(project);
     }
