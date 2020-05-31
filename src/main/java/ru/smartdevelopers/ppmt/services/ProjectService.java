@@ -28,7 +28,12 @@ public class ProjectService {
         this.userRepository = userRepository;
     }
 
-    public Project saveOrUpdateProject (Project project, User user){
+    public Project create (Project project, User user){
+        project.setCreatedBy(user);
+        return projectRepository.save(project);
+    }
+
+    public Project update (Project project, User user) {
         project.setCreatedBy(user);
         return projectRepository.save(project);
     }
@@ -37,14 +42,14 @@ public class ProjectService {
         return projectRepository.findAllByProjectLeader(username);
     }
 
-    public Project findProjectById (Long id){
-        Optional<Project> project = projectRepository.findById(id);
-        //добавить exception?
-        return project;
-    }
+//    public Project findProjectById (Long id){
+//        Optional<Project> project = projectRepository.findById(id);
+//        //добавить exception?
+//        return project;
+//    }
 
-    public void deleteProjectById(String projectId, String username){
-        projectRepository.delete(findProjectById(projectId, username));
+    public void delete(Project project){
+        projectRepository.delete(project);
     }
 
 }

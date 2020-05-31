@@ -18,7 +18,7 @@ import java.security.Principal;
 @RequestMapping ("/api/projects")
 public class ProjectControllers {
 
-    private UserRepository userRepository;
+    private UserService userService;
 
     private ProjectService projectService;
 
@@ -28,8 +28,8 @@ public class ProjectControllers {
     }
 
     @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
@@ -39,29 +39,46 @@ public class ProjectControllers {
     }
 
     @GetMapping ("/{project}")
-    public ResponseEntity<?> getProjectById (@PathVariable Project project, Principal principal) throws Exception {
-        User user = userRepository.findByUsername(principal.getName());
+    public ResponseEntity<?> getProjectById (@PathVariable Project project, Principal principal) {
+        User user = userService.findByUsername(principal.getName());
         if (project.getCreatedBy().getId().equals(user.getId())) {
             return new ResponseEntity<>(project, HttpStatus.OK);
         }
         return new ResponseEntity<Project>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("")
-    public ResponseEntity<Project> createNewProject (@RequestBody Project project, Principal principal){
-
-        User user = userRepository.findByUsername(principal.getName());
-        Project createdProject = projectService.saveOrUpdateProject(project, user);
-
-        return new ResponseEntity<Project>(createdProject, HttpStatus.CREATED);
+    @PostMapping()
+    public ResponseEntity<Project> create(@RequestBody Project project, Principal principal){
+        // Проверка пользователя
+        User user = userService.findByUsername(principal.getName());
+        if (user != null) {
+            // При создании устанавливать пользователя
+            Project createdProject = projectService.create(project, user);
+            createdProject.setCreatedBy(user);
+            return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/{projectId}")
-    public ResponseEntity<?> deleteProject (@PathVariable String projectId, Principal principal){
 
-        projectService.deleteProjectById(projectId, principal.getName());
+    @PutMapping("/{project}")
+    public ResponseEntity<Project> update(@PathVariable Project project, Principal principal) {
+        User user = userService.findByUsername(principal.getName());
+        if(project.getCreatedBy().getId().equals(user.getId())) {
+            projectService.update(project, user);
+            return new ResponseEntity<>(project, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
-        return new ResponseEntity<String>("Project with ID: '"+projectId+"' was deleted", HttpStatus.OK);
+    @DeleteMapping("/{project}")
+    public ResponseEntity<Project> delete (@PathVariable Project project, Principal principal) {
+        User user = userService.findByUsername(principal.getName());
+        if (project.getCreatedBy().getId().equals(user.getId())) {
+            projectService.delete(project);
+            return new ResponseEntity<>(project, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 }
