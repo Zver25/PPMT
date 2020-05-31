@@ -21,7 +21,7 @@ import ru.smartdevelopers.ppmt.services.UserService;
 
 @RestController
 @RequestMapping("/api/users")
-public class UserControllers {
+public class UserController {
 
     private UserService userService;
 
