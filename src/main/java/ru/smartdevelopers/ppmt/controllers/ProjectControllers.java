@@ -33,8 +33,7 @@ public class ProjectControllers {
     }
 
     @GetMapping
-    public Iterable<Project> getAllProject (Principal principal){
-
+    public Iterable<Project> getAllProject (Principal principal) {
         return projectService.findAllProjects(principal.getName());
     }
 
@@ -48,7 +47,7 @@ public class ProjectControllers {
     }
 
     @PostMapping()
-    public ResponseEntity<Project> create(@RequestBody Project project, Principal principal){
+    public ResponseEntity<Project> create(@RequestBody Project project, Principal principal) {
         // Проверка пользователя
         User user = userService.findByUsername(principal.getName());
         if (user != null) {
