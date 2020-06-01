@@ -3,20 +3,16 @@ package ru.smartdevelopers.ppmt.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.smartdevelopers.ppmt.domains.Project;
 import ru.smartdevelopers.ppmt.domains.User;
-import ru.smartdevelopers.ppmt.repositories.UserRepository;
 import ru.smartdevelopers.ppmt.services.ProjectService;
 import ru.smartdevelopers.ppmt.services.UserService;
-
 import java.security.Principal;
 
 @RestController
 @RequestMapping ("/api/projects")
-public class ProjectControllers {
+public class ProjectController {
 
     private UserService userService;
 
@@ -34,7 +30,7 @@ public class ProjectControllers {
 
     @GetMapping
     public Iterable<Project> getAllProject (Principal principal) {
-        return projectService.findAllProjects(principal.getName());
+        return projectService.findAllByUser(principal.getName());
     }
 
     @GetMapping ("/{project}")
@@ -64,8 +60,8 @@ public class ProjectControllers {
     public ResponseEntity<Project> update(@PathVariable Project project, Principal principal) {
         User user = userService.findByUsername(principal.getName());
         if(project.getCreatedBy().getId().equals(user.getId())) {
-            projectService.update(project, user);
-            return new ResponseEntity<>(project, HttpStatus.OK);
+            Project updatedProject = projectService.update(project);
+            return new ResponseEntity<>(updatedProject, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -75,7 +71,7 @@ public class ProjectControllers {
         User user = userService.findByUsername(principal.getName());
         if (project.getCreatedBy().getId().equals(user.getId())) {
             projectService.delete(project);
-            return new ResponseEntity<>(project, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
