@@ -23,8 +23,12 @@ public class UserService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public User save(User user) {
+    public User create(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
+
+    public User update(User user) {
         return userRepository.save(user);
     }
 
