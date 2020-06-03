@@ -33,7 +33,7 @@ public class ProjectController {
         return projectService.findAllByUser(principal.getName());
     }
 
-    @GetMapping ("/{project}")
+    @GetMapping ("{project}")
     public ResponseEntity<?> getProjectById (@PathVariable Project project, Principal principal) {
         User user = userService.findByUsername(principal.getName());
         if (project.getCreatedBy().getId().equals(user.getId())) {
@@ -56,7 +56,7 @@ public class ProjectController {
     }
 
 
-    @PutMapping("/{project}")
+    @PutMapping("{project}")
     public ResponseEntity<Project> update(@PathVariable Project project, Principal principal) {
         User user = userService.findByUsername(principal.getName());
         if(project.getCreatedBy().getId().equals(user.getId())) {
@@ -66,7 +66,7 @@ public class ProjectController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/{project}")
+    @DeleteMapping("{project}")
     public ResponseEntity<Project> delete (@PathVariable Project project, Principal principal) {
         User user = userService.findByUsername(principal.getName());
         if (project.getCreatedBy().getId().equals(user.getId())) {

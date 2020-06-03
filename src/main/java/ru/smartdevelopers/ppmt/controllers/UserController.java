@@ -1,6 +1,5 @@
 package ru.smartdevelopers.ppmt.controllers;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,14 +49,14 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/registration")
+    @PostMapping("registration")
     public ResponseEntity<User> register(@RequestBody RegisterUserRequest user) throws Exception {
         User requestUser = user.mapToUser();
         User createdUser = userService.create(requestUser);
         return new ResponseEntity<User>(createdUser, HttpStatus.CREATED);
     }
 
-    @PostMapping("/login")
+    @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody LoginUserRequest loginUserRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
