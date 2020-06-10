@@ -1,14 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import {Router, Route, Redirect} from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
+import {AuthPage} from "./components/AuthPage";
+import {ProjectsPage} from "./components/ProjectsPage";
+import {createBrowserHistory} from "history";
+
+import './index.css';
+
+const history = createBrowserHistory();
+
+let isAuthenticated: boolean = true;
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <React.StrictMode>
+        <Router history={history}>
+            <Route path="/auth" component={AuthPage}/>
+            <Route path="/projects" render={(props) => isAuthenticated ? <ProjectsPage/> : <Redirect to="/auth" />}/>
+            <Redirect from='/' to='/auth'/>
+        </Router>
+    </React.StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change
