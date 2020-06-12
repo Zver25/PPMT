@@ -50,10 +50,19 @@ public class UserController {
     }
 
     @PostMapping("registration")
-    public ResponseEntity<User> register(@RequestBody RegisterUserRequest user) throws Exception {
+    public ResponseEntity<?> register(@RequestBody RegisterUserRequest user) throws Exception {
         User requestUser = user.mapToUser();
-        User createdUser = userService.create(requestUser);
-        return new ResponseEntity<User>(createdUser, HttpStatus.CREATED);
+        userService.create(requestUser);
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        user.getUsername(),
+                        user.getPassword()
+                )
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtProvider.generate(authentication);
+        return ResponseEntity.ok(new SuccessLoginResponse(true, token));
     }
 
     @PostMapping("login")
