@@ -1,14 +1,14 @@
 import React from "react";
 
-export interface ProjectsPageProps {
+export interface DashboardPageProps {
 
 }
 
-interface ProjectsPageState {
+interface DashboardPageState {
 
 }
 
-export class ProjectsPage extends React.Component<ProjectsPageProps, ProjectsPageState>{
+class DashboardPage extends React.Component<DashboardPageProps, DashboardPageState>{
 
     render(): React.ReactNode {
         return (
@@ -33,3 +33,5 @@ export class ProjectsPage extends React.Component<ProjectsPageProps, ProjectsPag
         );
     }
 }
+
+export default DashboardPage;

@@ -1,24 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Router, Route, Redirect} from 'react-router-dom';
+import {Router, Route, Redirect, Switch} from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
-import {AuthPage} from "./components/AuthPage";
-import {ProjectsPage} from "./components/ProjectsPage";
+import AuthPage from "./components/AuthPage";
+import DashboardPage from "./components/ProjectsPage";
 import {createBrowserHistory} from "history";
 
+import store from "./store";
+
 import './index.css';
+import {Provider} from "react-redux";
 
 const history = createBrowserHistory();
 
-let isAuthenticated: boolean = true;
-
 ReactDOM.render(
     <React.StrictMode>
-        <Router history={history}>
-            <Route path="/auth" component={AuthPage}/>
-            <Route path="/projects" render={(props) => isAuthenticated ? <ProjectsPage/> : <Redirect to="/auth" />}/>
-            <Redirect from='/' to='/auth'/>
-        </Router>
+        <Provider store={store}>
+            <Router history={history}>
+                <Switch>
+                    <Route path="/auth" component={AuthPage}/>
+                    <Route path="/projects" render={(props) =>
+                        store.getState().auth.token !== null
+                            ? <DashboardPage />
+                            : <Redirect from="/projects" to="/auth" />
+                    }/>
+                    <Redirect from="/" to="/projects" exact strict />
+                </Switch>
+            </Router>
+        </Provider>
     </React.StrictMode>,
     document.getElementById('root')
 );

@@ -1,5 +1,5 @@
 .frame {
-    height: 550px;
+    height: 450px;
     width: 430px;
     background: linear-gradient(rgba(35, 43, 85, 0.75), rgba(35, 43, 85, 0.95)), url(https://res.cloudinary.com/dxfq3iotg/image/upload/v1564049481/bg-clouds.jpg) no-repeat center center;
     background-size: cover;
@@ -297,6 +297,7 @@ textarea:focus {
 }
 
 .btn-animate {
+    cursor: pointer;
     float: left;
     font-weight: 700;
     text-transform: uppercase;

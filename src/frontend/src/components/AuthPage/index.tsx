@@ -1,25 +1,85 @@
-import React from 'react';
-import './style.css';
-import {Link} from "react-router-dom";
+import React, {ChangeEvent} from 'react';
+import {connect} from "react-redux";
+import {ThunkDispatch} from "redux-thunk";
+import { Redirect, RouteComponentProps } from 'react-router-dom';
 
-export interface AuthPageProps {
-    
-}
+import './style.css';
+import {RootState} from "../../store";
+import {AuthState, loginAction, registrationAction} from "../../store/auth";
 
 interface AuthPageState {
-    isSignUp: boolean
+    isSignUp: boolean;
+    username: string;
+    fullname: string;
+    password: string;
+    confirmPassword: string;
 }
 
-export class AuthPage extends React.Component<AuthPageProps, AuthPageState> {
-    constructor(props: AuthPageProps) {
+interface AuthPageDispatchProps {
+    login: (username: string, password: string) => void;
+    registration: (username: string, fullname: string, password: string, confirmPassword: string) => void;
+}
+
+interface AuthPageStateProps {
+    auth: AuthState,
+}
+
+const mapStateToProps = (state: RootState): AuthPageStateProps => ({
+    auth: state.auth,
+});
+
+const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, any>): AuthPageDispatchProps => ({
+    login: async (username: string, password: string) => {
+        await dispatch(loginAction(username, password));
+    },
+    registration: async (username: string, fullname: string, password: string, confirmPassword: string) =>
+        await dispatch(registrationAction(username, fullname, password, confirmPassword))
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type AuthPageAllProps = RouteComponentProps & AuthPageStateProps & AuthPageDispatchProps;
+
+class AuthPage extends React.Component<AuthPageAllProps, AuthPageState> {
+    constructor(props: AuthPageAllProps) {
         super(props);
         this.state = {
-            isSignUp: false
+            isSignUp: false,
+            username: '',
+            fullname: '',
+            password: '',
+            confirmPassword: ''
         };
     }
 
+    handleChangeUsername = (e: ChangeEvent<HTMLInputElement>): void => {
+        this.setState({username: e.target.value});
+    }
+
+    handleChangeFullname = (e: ChangeEvent<HTMLInputElement>): void => {
+        this.setState({fullname: e.target.value});
+    }
+
+    handleChangePassword = (e: ChangeEvent<HTMLInputElement>): void => {
+        this.setState({password: e.target.value});
+    }
+
+    handleChangeConfirmPassword = (e: ChangeEvent<HTMLInputElement>): void => {
+        this.setState({confirmPassword: e.target.value});
+    }
+
+    handleLogin = () => {
+        const {username, password} = this.state;
+        this.props.login(username, password);
+    }
+
     render(): React.ReactNode {
-        const { isSignUp } = this.state;
+        const { auth } = this.props;
+        const { isSignUp, username, fullname, password, confirmPassword } = this.state;
+        console.log(auth);
+        if (auth.token !== null) {
+            return <Redirect to="/projects" />;
+        }
         return (
             <div className="container">
                 <div className={"frame" + (isSignUp ? " frame-long" : "")}>
@@ -34,44 +94,44 @@ export class AuthPage extends React.Component<AuthPageProps, AuthPageState> {
                         </ul>
                     </div>
                     <div>
-                        <form className={"form-signin" + (isSignUp ? " form-signin-left" : "")} action="" method="post" name="form">
+                        <form className={"form-signin" + (isSignUp ? " form-signin-left" : "")}>
                             <label htmlFor="username">Username</label>
-                            <input className="form-styling" type="text" name="username" placeholder=""/>
+                            <input className="form-styling" type="text" name="username"
+                                   value={username} onChange={this.handleChangeUsername}/>
                             <label htmlFor="password">Password</label>
-                            <input className="form-styling" type="text" name="password" placeholder=""/>
+                            <input className="form-styling" type="password" name="password"
+                                   value={password} onChange={this.handleChangePassword}/>
                             { /*
                             <input type="checkbox" id="checkbox"/>
                             <label htmlFor="checkbox"><span className="ui"/>Keep me signed in</label>
                             */}
                             <div className="btn-animate">
-                                {/*
-                                <a className="btn-signin">Sign in</a>
-                                */}
-                                <Link className="btn-signin" to="/projects" >Sign in</Link>
+                                <span className="btn-signin" onClick={this.handleLogin}>Sign in</span>
                             </div>
                         </form>
                         <form className={"form-signup" + (isSignUp ? " form-signup-left" : "")} action="" method="post" name="form">
                             <label htmlFor="fullname">Full name</label>
-                            <input className="form-styling" type="text" name="fullname" placeholder=""/>
+                            <input className="form-styling" type="text" name="fullname"
+                                   value={fullname} onChange={this.handleChangeFullname}/>
                             <label htmlFor="email">Email</label>
-                            <input className="form-styling" type="text" name="email" placeholder=""/>
+                            <input className="form-styling" type="text" name="email"
+                                   value={username} onChange={this.handleChangeUsername}/>
                             <label htmlFor="password">Password</label>
-                            <input className="form-styling" type="text" name="password" placeholder=""/>
+                            <input className="form-styling" type="password" name="password"
+                                   value={password} onChange={this.handleChangePassword}/>
                             <label htmlFor="confirmpassword">Confirm password</label>
-                            <input className="form-styling" type="text" name="confirmpassword" placeholder=""/>
+                            <input className="form-styling" type="password" name="confirmpassword"
+                                   value={confirmPassword} onChange={this.handleChangeConfirmPassword}/>
                             <div className="btn-animate">
-                                <a className="btn-signup">Sign Up</a>
+                                <span className="btn-signup">Sign Up</span>
                             </div>
                         </form>
-                        <div className="success">
-                            <div className="successtext">
-                                <p> Thanks for signing up! Check your email for confirmation.</p>
-                            </div>
-                        </div>
                     </div>
+                    {/*
                     <div className={"forgot" + (isSignUp ? " forgot-left" : "")}>
                         <a href="#">Forgot your password?</a>
                     </div>
+                    */}
                 </div>
                 { /*<a id="refresh">???</a> */}
             </div>
@@ -79,3 +139,5 @@ export class AuthPage extends React.Component<AuthPageProps, AuthPageState> {
     }
 
 }
+
+export default connector(AuthPage);
