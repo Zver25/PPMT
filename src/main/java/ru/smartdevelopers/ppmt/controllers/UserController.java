@@ -15,6 +15,11 @@ import ru.smartdevelopers.ppmt.payloads.SuccessLoginResponse;
 import ru.smartdevelopers.ppmt.security.JwtProvider;
 import ru.smartdevelopers.ppmt.services.UserService;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
+import static ru.smartdevelopers.ppmt.security.SecurityConstants.HEADER_TOKEN;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -41,14 +46,6 @@ public class UserController {
         this.jwtProvider = jwtProvider;
     }
 
-    @GetMapping("{user}")
-    public ResponseEntity<User> getUserInfo(@PathVariable User user) {
-        if (user != null) {
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
     @PostMapping("registration")
     public ResponseEntity<?> register(@RequestBody RegisterUserRequest user) throws Exception {
         User requestUser = user.mapToUser();
@@ -66,7 +63,7 @@ public class UserController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<?> login(@RequestBody LoginUserRequest loginUserRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginUserRequest loginUserRequest, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginUserRequest.getUsername(),
@@ -75,6 +72,7 @@ public class UserController {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generate(authentication);
+        response.addCookie(new Cookie(HEADER_TOKEN, token));
         return ResponseEntity.ok(new SuccessLoginResponse(true, token));
     }
 

@@ -6,8 +6,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class MainController {
 
+    private static final String INDEX = "index.html";
+
     @RequestMapping("/")
     public String index() {
-        return "index.html";
+        return INDEX;
+    }
+
+    @RequestMapping("/projects")
+    public String projects() {
+        return INDEX;
+    }
+
+    @RequestMapping("/auth")
+    public String auth() {
+        return INDEX;
     }
 }

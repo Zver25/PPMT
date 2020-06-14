@@ -73,10 +73,14 @@ class AuthPage extends React.Component<AuthPageAllProps, AuthPageState> {
         this.props.login(username, password);
     }
 
+    handleRegistration = () => {
+        const {username, fullname, password, confirmPassword} = this.state;
+        this.props.registration(username, fullname, password, confirmPassword);
+    }
+
     render(): React.ReactNode {
         const { auth } = this.props;
         const { isSignUp, username, fullname, password, confirmPassword } = this.state;
-        console.log(auth);
         if (auth.token !== null) {
             return <Redirect to="/projects" />;
         }
@@ -95,7 +99,7 @@ class AuthPage extends React.Component<AuthPageAllProps, AuthPageState> {
                     </div>
                     <div>
                         <form className={"form-signin" + (isSignUp ? " form-signin-left" : "")}>
-                            <label htmlFor="username">Username</label>
+                            <label htmlFor="username">E-mail</label>
                             <input className="form-styling" type="text" name="username"
                                    value={username} onChange={this.handleChangeUsername}/>
                             <label htmlFor="password">Password</label>
@@ -113,7 +117,7 @@ class AuthPage extends React.Component<AuthPageAllProps, AuthPageState> {
                             <label htmlFor="fullname">Full name</label>
                             <input className="form-styling" type="text" name="fullname"
                                    value={fullname} onChange={this.handleChangeFullname}/>
-                            <label htmlFor="email">Email</label>
+                            <label htmlFor="email">E-mail</label>
                             <input className="form-styling" type="text" name="email"
                                    value={username} onChange={this.handleChangeUsername}/>
                             <label htmlFor="password">Password</label>
@@ -123,7 +127,7 @@ class AuthPage extends React.Component<AuthPageAllProps, AuthPageState> {
                             <input className="form-styling" type="password" name="confirmpassword"
                                    value={confirmPassword} onChange={this.handleChangeConfirmPassword}/>
                             <div className="btn-animate">
-                                <span className="btn-signup">Sign Up</span>
+                                <span className="btn-signup" onClick={this.handleRegistration}>Sign Up</span>
                             </div>
                         </form>
                     </div>
