@@ -41,39 +41,32 @@ public class UserController {
         this.authenticationManager = authenticationManager;
     }
 
+    private ResponseEntity<?> authenticate(String username, String password, HttpServletResponse response) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password)
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtProvider.generate(authentication);
+        response.addCookie(new Cookie(HEADER_TOKEN, token));
+        return ResponseEntity.ok(new SuccessLoginResponse(true, token));
+    }
+
     @Autowired
     public void setJwtProvider(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
     }
 
     @PostMapping("registration")
-    public ResponseEntity<?> register(@RequestBody RegisterUserRequest user) throws Exception {
+    public ResponseEntity<?> register(@RequestBody RegisterUserRequest user, HttpServletResponse response) throws Exception {
         User requestUser = user.mapToUser();
         userService.create(requestUser);
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        user.getUsername(),
-                        user.getPassword()
-                )
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtProvider.generate(authentication);
-        return ResponseEntity.ok(new SuccessLoginResponse(true, token));
+        return authenticate(user.getUsername(), user.getPassword(), response);
     }
 
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody LoginUserRequest loginUserRequest, HttpServletResponse response) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginUserRequest.getUsername(),
-                        loginUserRequest.getPassword()
-                )
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtProvider.generate(authentication);
-        response.addCookie(new Cookie(HEADER_TOKEN, token));
-        return ResponseEntity.ok(new SuccessLoginResponse(true, token));
+        return authenticate(loginUserRequest.getUsername(), loginUserRequest.getPassword(), response);
     }
 
 }
