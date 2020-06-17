@@ -47,6 +47,11 @@ export const projectsReducer: Reducer<IProjectsState, IProjectsActionTypes> = (s
                     ...state.list.filter((project: IProject) => project.id !== action.id)
                 ]
             };
+        case "PROJECT_SELECT":
+            return {
+                ...state,
+                selectedProjectId: action.id
+            };
         default:
             return state;
     }

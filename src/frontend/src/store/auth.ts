@@ -1,9 +1,8 @@
-import {Action, ActionCreator, Dispatch} from 'redux';
-import {ThunkAction} from 'redux-thunk';
-import {Reducer} from "react";
+import {Action, ActionCreator, Reducer} from 'redux';
 import axios, {AxiosResponse} from "axios";
 
 import {rootUrl} from "./rootUrl";
+import {AppThunkAction, AppThunkDispatch} from "./index";
 
 const AUTH_SET_SYNC = 'AUTH_SET_SYNC';
 const LOGIN = 'LOGIN';
@@ -23,18 +22,18 @@ const initialState: AuthState = {
     token: null
 }
 
-interface LoginAction {
+interface LoginAction extends Action {
     type: typeof LOGIN;
     username: string;
     password: string;
 }
 
-interface SetSyncAction {
+interface SetSyncAction extends Action {
     type: typeof AUTH_SET_SYNC;
     isSync: boolean;
 }
 
-interface RegistrationAction {
+interface RegistrationAction extends Action {
     type: typeof REGISTRATION;
     username: string;
     fullname: string;
@@ -42,12 +41,12 @@ interface RegistrationAction {
     confirmPassword: string;
 }
 
-interface LoginSuccessResponse {
+interface LoginSuccessResponse extends Action {
     status: boolean;
     token: string;
 }
 
-interface SetTokenAction {
+interface SetTokenAction extends Action {
     type: typeof AUTH_SET_TOKEN;
     token: string
 }
@@ -58,11 +57,10 @@ const setTokenAction = (token: string): SetTokenAction => ({ type: AUTH_SET_TOKE
 
 export type AuthActionTypes = LoginAction | RegistrationAction | SetSyncAction | SetTokenAction;
 
-export const loginAction: ActionCreator<ThunkAction<void, AuthActionTypes, undefined, Action>> = (
+export const loginAction: ActionCreator<AppThunkAction<AuthActionTypes>> = (
     username: string,
     password: string
-) => (dispatch: Dispatch<AuthActionTypes>): void => {
-    dispatch(setSyncAction(true));
+) => (dispatch: AppThunkDispatch): AuthActionTypes => {
     axios.post<LoginSuccessResponse>(rootUrl + '/users/login', {username, password})
         .then((response: AxiosResponse<LoginSuccessResponse>) => {
             dispatch(setSyncAction(false));
@@ -72,15 +70,15 @@ export const loginAction: ActionCreator<ThunkAction<void, AuthActionTypes, undef
             // @TO-DO: Dispatch error
             dispatch(setSyncAction(false));
         });
+    return setSyncAction(true);
 }
 
-export const registrationAction: ActionCreator<ThunkAction<void, AuthActionTypes, undefined, Action>> = (
+export const registrationAction: ActionCreator<AppThunkAction<AuthActionTypes>> = (
     username: string,
     fullname: string,
     password: string,
     confirmPassword: string
-) => (dispatch: Dispatch<AuthActionTypes>): void => {
-    dispatch(setSyncAction(true));
+) => (dispatch: AppThunkDispatch): AuthActionTypes => {
     axios.post<LoginSuccessResponse>(rootUrl + '/users/registration', {username, fullname, password, confirmPassword})
         .then((response: AxiosResponse<LoginSuccessResponse>) => {
             dispatch(setSyncAction(false));
@@ -90,6 +88,7 @@ export const registrationAction: ActionCreator<ThunkAction<void, AuthActionTypes
             // @TO-DO: Dispatch error
             dispatch(setSyncAction(false));
         });
+    return setSyncAction(true);
 }
 
 export const authReducer: Reducer<AuthState, AuthActionTypes> = (state: AuthState = initialState, action: AuthActionTypes): AuthState => {
@@ -116,5 +115,4 @@ export const authReducer: Reducer<AuthState, AuthActionTypes> = (state: AuthStat
             return state;
     }
 }
-
 

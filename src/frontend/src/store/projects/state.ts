@@ -1,5 +1,6 @@
 export interface IProjectsState {
     list: Array<IProject>;
+    selectedProjectId: number;
     isSync: null | number;
 }
 
@@ -12,5 +13,6 @@ export interface IProject {
 
 export const initialState: IProjectsState = {
     list: [],
+    selectedProjectId: 0,
     isSync: null
 }
