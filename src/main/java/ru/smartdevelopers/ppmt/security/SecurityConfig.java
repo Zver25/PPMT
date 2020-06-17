@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.smartdevelopers.ppmt.services.CustomUserDetailsService;
 
 import static ru.smartdevelopers.ppmt.security.SecurityConstants.AUTH_URLS;
@@ -32,6 +33,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    private JwtAuthenticationFilter filter;
+
     @Autowired
     public void setUnauthorizedHandler(JwtAuthenticationEntryPoint unauthorizedHandler) {
         this.unauthorizedHandler = unauthorizedHandler;
@@ -46,6 +49,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void setBCryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {return  new JwtAuthenticationFilter();}
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -87,5 +93,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(H2_CONSOLE).permitAll()
                     .antMatchers(AUTH_URLS).permitAll()
                     .anyRequest().authenticated();
+
+        httpSecurity.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }

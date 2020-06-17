@@ -27,7 +27,7 @@ public class JwtProvider {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userId);
         claims.put("username", user.getUsername());
-        claims.put("fullname", user.getFullName());
+        claims.put("fullName", user.getFullName());
         return Jwts.builder()
                 .setSubject(userId)
                 .setClaims(claims)
@@ -62,7 +62,7 @@ public class JwtProvider {
 
     public Long getUserIdFromJwt(String token) {
         Claims claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
-        String id = claims.getId();
+        String id = claims.get("id").toString();
         return Long.parseLong(id);
     }
 
