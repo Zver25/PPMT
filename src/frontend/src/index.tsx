@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import {Router, Route, Redirect, Switch} from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 import AuthPage from "./components/AuthPage";
-import DashboardPage from "./components/ProjectsPage";
+import DashboardPage from "./components/DashboardPage";
 import {createBrowserHistory} from "history";
 
 import store from "./store";

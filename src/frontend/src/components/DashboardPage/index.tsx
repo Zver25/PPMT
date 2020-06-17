@@ -1,18 +1,18 @@
 import React from "react";
-import {Action, AnyAction} from "redux";
-import { ThunkDispatch } from "redux-thunk";
-import {IProject, IProjectsState} from "../../store/projects/state";
+import {connect, ConnectedProps} from "react-redux";
+
+import {IProjectsState} from "../../store/projects/state";
 import {ProjectList} from "../ProjectList";
-import {AppActions, AppThunkDispatch, RootState} from "../../store";
+import {AppThunkDispatch, RootState} from "../../store";
 import {
     deleteProjectThunkCreator,
     fetchProjectsThunkCreator,
-    updateProjectThunkCreator,
-    selectProject
+    selectProject,
+    updateProjectThunkCreator
 } from "../../store/projects/actions";
-import {connect} from "react-redux";
+import IProject from "../../models/Project";
 
-export interface DashboardPageProps {
+export interface IDashboardPageProps {
 
 }
 
@@ -31,7 +31,7 @@ interface IDashboardDispatchProps {
     selectProject: (id: number) => void;
 }
 
-type IDashboardAllProps = DashboardPageProps | IDashboardPageState | IDashboardStateProps;
+type IDashboardPageAllProps = IDashboardPageProps & ConnectedProps<typeof connector>;
 
 const mapStateToProps = (state: RootState): IDashboardStateProps => ({
     projects: state.projects
@@ -46,32 +46,25 @@ const mapDispatchToProps = (dispatch: AppThunkDispatch): IDashboardDispatchProps
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
-class DashboardPage extends React.Component<DashboardPageProps, IDashboardPageState>{
+class DashboardPage extends React.Component<IDashboardPageAllProps, IDashboardPageState>{
 
-    constructor(props: DashboardPageProps) {
-        super(props);
-        this.state = {
-            projectList: [
-                {
-                    id: 1,
-                    title: 'First project'
-                },
-                {
-                    id: 2,
-                    title: 'Second project'
-                }
-            ]
-        }
+    componentDidMount() {
+        this.props.fetchProjects();
     }
 
     render(): React.ReactNode {
+        const {projects} = this.props;
         return (
             <div className="container">
                 <div className="row">
                     <div className="col-4">
                         <div className="card">
                             <div className="card-body">
-                                <ProjectList list={this.state.projectList} />
+                                <ProjectList projects={projects}
+                                             onChange={(project) => {}}
+                                             onDelete={(id) => {}}
+                                             onSelected={id => {}}
+                                />
                             </div>
                         </div>
                     </div>
@@ -88,4 +81,4 @@ class DashboardPage extends React.Component<DashboardPageProps, IDashboardPageSt
     }
 }
 
-export default DashboardPage;
+export default connector(DashboardPage);

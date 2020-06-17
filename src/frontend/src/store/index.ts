@@ -1,5 +1,5 @@
-import {combineReducers, createStore, applyMiddleware, compose, Action, AnyAction} from "redux";
-import thunk, { ThunkAction, ThunkDispatch } from "redux-thunk";
+import {applyMiddleware, combineReducers, compose, createStore} from "redux";
+import thunk, {ThunkAction, ThunkDispatch} from "redux-thunk";
 
 import {AuthActionTypes, authReducer} from "./auth";
 import {projectsReducer} from "./projects/reducer";

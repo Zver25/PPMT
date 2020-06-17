@@ -1,11 +1,9 @@
 import {Action, ActionCreator} from "redux";
-import axios, {AxiosResponse} from "axios";
+import {AxiosResponse} from "axios";
 
-import {rootUrl} from "../rootUrl";
-import {IProject} from "./state";
 import {AppThunkAction, AppThunkDispatch} from "../index";
-
-const baseUrl = rootUrl + '/projects';
+import {ProjectService} from "../../services/ProjectService";
+import IProject from "../../models/Project";
 
 const PROJECTS_REQUEST_FAIL = 'PROJECTS_REQUEST_FAIL';
 const PROJECTS_FETCH_ALL = 'PROJECTS_FETCH_ALL';
@@ -101,7 +99,7 @@ const errorCatcher = (error: string, dispatch: AppThunkDispatch): void => {
 
 export const fetchProjectsThunkCreator: ActionCreator<AppThunkAction<IProjectsActionTypes>> = () =>
     (dispatch: AppThunkDispatch): IProjectsActionTypes => {
-        axios.get(baseUrl)
+        ProjectService.fetchAll()
             .then((response: AxiosResponse<Array<IProject>>) => {
                 if (response.status >=200 && response.status < 300) {
                     dispatch(fetchProjectsSuccess(response.data));
@@ -116,30 +114,22 @@ export const fetchProjectsThunkCreator: ActionCreator<AppThunkAction<IProjectsAc
 
 export const updateProjectThunkCreator: ActionCreator<AppThunkAction<IProjectsActionTypes>> = (project: IProject) =>
     (dispatch: AppThunkDispatch): IProjectsActionTypes => {
-        let url = baseUrl;
-        let request: Promise<AxiosResponse<IProject>>;
-        if (project.id && project.id > 0) {
-            url += '/' + project.id;
-            request = axios.put(url, JSON.stringify(project));
-        }
-        else {
-            request = axios.post(url, JSON.stringify(project));
-        }
-        request.then((response: AxiosResponse<IProject>) => {
-            if (response.status >=200 && response.status < 300) {
-                dispatch(updateProjectSuccess(response.data));
-            }
-            else {
-                dispatch(projectsRequestFail(response.statusText));
-            }
-        })
+        ProjectService.store(project)
+            .then((response: AxiosResponse<IProject>) => {
+                if (response.status >=200 && response.status < 300) {
+                    dispatch(updateProjectSuccess(response.data));
+                }
+                else {
+                    dispatch(projectsRequestFail(response.statusText));
+                }
+            })
             .catch((error) => errorCatcher(error, dispatch));
         return updateProject(project);
     }
 
 export const deleteProjectThunkCreator: ActionCreator<AppThunkAction<IProjectsActionTypes>> = (id: number) =>
     (dispatch: AppThunkDispatch): IProjectsActionTypes => {
-        axios.delete(`${baseUrl}/${id}`)
+        ProjectService.delete(id)
             .then((response: AxiosResponse<void>) => {
                 if (response.status >= 200 && response.status < 300) {
                     dispatch(deleteProjectSuccess(id));
@@ -160,4 +150,3 @@ export type IProjectsActionTypes = IProjectsRequestFailAction |
     IProjectDeleteAction |
     IProjectDeleteSuccessAction |
     IProjectSelectAction;
-

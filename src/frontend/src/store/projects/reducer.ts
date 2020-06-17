@@ -1,6 +1,8 @@
 import {Reducer} from 'redux';
+
 import {IProjectsActionTypes} from "./actions";
-import {initialState, IProject, IProjectsState} from "./state";
+import {initialState, IProjectsState} from "./state";
+import IProject from "../../models/Project";
 
 export const projectsReducer: Reducer<IProjectsState, IProjectsActionTypes> = (state = initialState, action: IProjectsActionTypes) => {
     switch (action.type) {
