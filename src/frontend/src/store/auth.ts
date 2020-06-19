@@ -1,8 +1,9 @@
 import {Action, ActionCreator, Reducer} from 'redux';
-import axios, {AxiosResponse} from "axios";
+import {AxiosResponse} from "axios";
 
-import {rootUrl} from "./rootUrl";
 import {AppThunkAction, AppThunkDispatch} from "./index";
+import UserService from "../services/UserService";
+import {SuccessAuthenticationResponse} from "../payload/User";
 
 const AUTH_SET_SYNC = 'AUTH_SET_SYNC';
 const LOGIN = 'LOGIN';
@@ -41,14 +42,14 @@ interface RegistrationAction extends Action {
     confirmPassword: string;
 }
 
-interface LoginSuccessResponse extends Action {
-    status: boolean;
-    token: string;
-}
-
 interface SetTokenAction extends Action {
     type: typeof AUTH_SET_TOKEN;
     token: string
+}
+
+interface LoginSuccessResponse {
+    status: boolean;
+    token: string;
 }
 
 const setSyncAction = (isSync: boolean): SetSyncAction => ({ type: AUTH_SET_SYNC, isSync });
@@ -61,10 +62,10 @@ export const loginAction: ActionCreator<AppThunkAction<AuthActionTypes>> = (
     username: string,
     password: string
 ) => (dispatch: AppThunkDispatch): AuthActionTypes => {
-    axios.post<LoginSuccessResponse>(rootUrl + '/users/login', {username, password})
-        .then((response: AxiosResponse<LoginSuccessResponse>) => {
+    UserService.login(username, password)
+        .then((response: AxiosResponse<SuccessAuthenticationResponse>) => {
             dispatch(setSyncAction(false));
-            dispatch(setTokenAction(response.data.token));
+            dispatch(setTokenAction(response.data.data));
         })
         .catch(x => {
             // @TO-DO: Dispatch error
@@ -79,10 +80,10 @@ export const registrationAction: ActionCreator<AppThunkAction<AuthActionTypes>> 
     password: string,
     confirmPassword: string
 ) => (dispatch: AppThunkDispatch): AuthActionTypes => {
-    axios.post<LoginSuccessResponse>(rootUrl + '/users/registration', {username, fullname, password, confirmPassword})
-        .then((response: AxiosResponse<LoginSuccessResponse>) => {
+    UserService.registration(username, fullname, password, confirmPassword)
+        .then((response: AxiosResponse<SuccessAuthenticationResponse>) => {
             dispatch(setSyncAction(false));
-            dispatch(setTokenAction(response.data.token));
+            dispatch(setTokenAction(response.data.data));
         })
         .catch(x => {
             // @TO-DO: Dispatch error

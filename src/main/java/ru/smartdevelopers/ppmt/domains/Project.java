@@ -14,6 +14,7 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
+    private String description;
     private Date createdAt;
     private Date completeAt;
 
@@ -59,6 +60,15 @@ public class Project {
     }
 
     public void setCompleteAt(Date completeAt) {
+
         this.completeAt = completeAt;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

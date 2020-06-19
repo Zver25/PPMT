@@ -5,9 +5,11 @@ import org.springframework.stereotype.Repository;
 import ru.smartdevelopers.ppmt.domains.Project;
 import ru.smartdevelopers.ppmt.domains.User;
 
+import java.util.List;
+
 @Repository
 public interface ProjectRepository  extends CrudRepository <Project, Long> {
 
-    Iterable <Project> findAllByCreatedBy(User user);
+    List<Project> findAllByCreatedBy(User user);
 
 }

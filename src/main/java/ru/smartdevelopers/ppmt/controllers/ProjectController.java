@@ -6,9 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.smartdevelopers.ppmt.domains.Project;
 import ru.smartdevelopers.ppmt.domains.User;
+import ru.smartdevelopers.ppmt.payloads.ResponsePayload;
 import ru.smartdevelopers.ppmt.services.ProjectService;
 import ru.smartdevelopers.ppmt.services.UserService;
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping ("/api/projects")
@@ -29,51 +31,61 @@ public class ProjectController {
     }
 
     @GetMapping
-    public Iterable<Project> getAllProject (Principal principal) {
-        return projectService.findAllByUser(principal.getName());
+    public ResponseEntity<ResponsePayload<List<Project>>> getAllProject (Principal principal) {
+        ResponsePayload<List<Project>> projectsResponsePayload =
+                (new ResponsePayload<List<Project>>()).setDataPayload(projectService.findAllByUser(principal.getName()));
+
+        return new ResponseEntity<>(projectsResponsePayload, HttpStatus.OK);
     }
 
     @GetMapping ("{project}")
-    public ResponseEntity<?> getProjectById (@PathVariable Project project, Principal principal) {
+    public ResponseEntity<ResponsePayload<Project>> getProjectById (@PathVariable Project project, Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        if (project.getCreatedBy().getId().equals(user.getId())) {
-            return new ResponseEntity<>(project, HttpStatus.OK);
+        if (project != null && project.getCreatedBy().getId().equals(user.getId())) {
+            ResponsePayload<Project> payload = (new ResponsePayload<Project>()).setDataPayload(project);
+            return new ResponseEntity<>(payload, HttpStatus.OK);
         }
-        return new ResponseEntity<Project>(HttpStatus.NOT_FOUND);
+        ResponsePayload<Project> payload = (new ResponsePayload<Project>()).setErrorPayload("Project not fount");
+        return new ResponseEntity<>(payload, HttpStatus.OK);
     }
 
     @PostMapping()
-    public ResponseEntity<Project> create(@RequestBody Project project, Principal principal) {
+    public ResponseEntity<ResponsePayload<Project>> create(@RequestBody Project project, Principal principal) {
         // Проверка пользователя
         User user = userService.findByUsername(principal.getName());
-        if (user != null) {
+        if (project != null && user != null) {
             // При создании устанавливать пользователя
             Project createdProject = projectService.create(project, user);
-            createdProject.setCreatedBy(user);
-            return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
+            ResponsePayload<Project> payload = (new ResponsePayload<Project>()).setDataPayload(createdProject);
+            return new ResponseEntity<>(payload, HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        ResponsePayload<Project> payload = (new ResponsePayload<Project>()).setErrorPayload("Cant create project");
+        return new ResponseEntity<>(payload, HttpStatus.OK);
     }
 
 
     @PutMapping("{project}")
-    public ResponseEntity<Project> update(@PathVariable Project project, Principal principal) {
+    public ResponseEntity<ResponsePayload<Project>> update(@PathVariable Project project, Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        if(project.getCreatedBy().getId().equals(user.getId())) {
+        if(project != null && project.getCreatedBy().getId().equals(user.getId())) {
             Project updatedProject = projectService.update(project);
-            return new ResponseEntity<>(updatedProject, HttpStatus.OK);
+            ResponsePayload<Project> payload = (new ResponsePayload<Project>()).setDataPayload(updatedProject);
+            return new ResponseEntity<>(payload, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        ResponsePayload<Project> payload = (new ResponsePayload<Project>()).setErrorPayload("Cant update project");
+        return new ResponseEntity<>(payload, HttpStatus.OK);
     }
 
     @DeleteMapping("{project}")
-    public ResponseEntity<Project> delete (@PathVariable Project project, Principal principal) {
+    public ResponseEntity<ResponsePayload<Long>> delete (@PathVariable Project project, Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        if (project.getCreatedBy().getId().equals(user.getId())) {
+        if (project != null && project.getCreatedBy().getId().equals(user.getId())) {
             projectService.delete(project);
-            return new ResponseEntity<>(HttpStatus.OK);
+            ResponsePayload<Long> payload = (new ResponsePayload<Long>()).setDataPayload(project.getId());
+            return new ResponseEntity<>(payload, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        ResponsePayload<Long> payload = (new ResponsePayload<Long>()).setErrorPayload("Cant delete project");
+        return new ResponseEntity<>(payload, HttpStatus.OK);
     }
 
 }

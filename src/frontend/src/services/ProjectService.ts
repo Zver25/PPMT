@@ -1,19 +1,19 @@
 import {BaseService} from "./BaseService";
 import IProject from "../models/Project";
 import axios, { AxiosResponse } from "axios";
+import {ProjectResponse, ProjectsResponse} from "../payload/Projects";
 
 export class ProjectService extends BaseService {
-
 
     protected static getApiUrl(): string {
         return super.getApiUrl() + "/projects";
     }
 
-    public static fetchAll(): Promise<AxiosResponse<Array<IProject>>> {
+    public static fetchAll(): Promise<AxiosResponse<ProjectsResponse>> {
         return axios.get(this.getApiUrl());
     }
 
-    public static store(project: IProject): Promise<AxiosResponse<IProject>> {
+    public static store(project: IProject): Promise<AxiosResponse<ProjectResponse>> {
         let url = this.getApiUrl();
         if (project.id && project.id > 0) {
             url += '/' + project.id;
@@ -22,7 +22,7 @@ export class ProjectService extends BaseService {
         return axios.post(url, JSON.stringify(project));
     }
 
-    public static delete(id: number): Promise<AxiosResponse<void>> {
+    public static delete(id: number): Promise<AxiosResponse<number>> {
         return axios.delete(this.getApiUrl() + "/" + id);
     }
 

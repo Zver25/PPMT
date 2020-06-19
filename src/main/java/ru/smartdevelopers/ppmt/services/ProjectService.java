@@ -7,6 +7,8 @@ import ru.smartdevelopers.ppmt.domains.User;
 import ru.smartdevelopers.ppmt.repositories.ProjectRepository;
 import ru.smartdevelopers.ppmt.repositories.UserRepository;
 
+import java.util.List;
+
 @Service
 public class ProjectService {
 
@@ -25,7 +27,7 @@ public class ProjectService {
         this.userRepository = userRepository;
     }
 
-    public Iterable<Project> findAllByUser(String username) {
+    public List<Project> findAllByUser(String username) {
         User user = userRepository.findByUsername(username);
         return projectRepository.findAllByCreatedBy(user);
     }

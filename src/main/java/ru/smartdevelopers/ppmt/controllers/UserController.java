@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.smartdevelopers.ppmt.domains.User;
 import ru.smartdevelopers.ppmt.payloads.LoginUserRequest;
 import ru.smartdevelopers.ppmt.payloads.RegisterUserRequest;
+import ru.smartdevelopers.ppmt.payloads.ResponsePayload;
 import ru.smartdevelopers.ppmt.payloads.SuccessLoginResponse;
 import ru.smartdevelopers.ppmt.security.JwtProvider;
 import ru.smartdevelopers.ppmt.services.UserService;
@@ -41,14 +42,15 @@ public class UserController {
         this.authenticationManager = authenticationManager;
     }
 
-    private ResponseEntity<?> authenticate(String username, String password, HttpServletResponse response) {
+    private ResponseEntity<ResponsePayload<String>> authenticate(String username, String password, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password)
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtProvider.generate(authentication);
         response.addCookie(new Cookie(HEADER_TOKEN, token));
-        return ResponseEntity.ok(new SuccessLoginResponse(true, token));
+        ResponsePayload<String> payload = (new ResponsePayload<String>()).setDataPayload(token);
+        return new ResponseEntity<>(payload, HttpStatus.OK);
     }
 
     @Autowired
