@@ -5,7 +5,7 @@ import { Redirect, RouteComponentProps } from 'react-router-dom';
 
 import './style.css';
 import {RootState} from "../../store";
-import {AuthState, loginAction, registrationAction} from "../../store/auth";
+import {IAuthState, loginAction, registrationAction} from "../../store/auth";
 
 interface AuthPageState {
     isSignUp: boolean;
@@ -21,7 +21,7 @@ interface AuthPageDispatchProps {
 }
 
 interface AuthPageStateProps {
-    auth: AuthState,
+    auth: IAuthState,
 }
 
 const mapStateToProps = (state: RootState): AuthPageStateProps => ({

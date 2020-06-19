@@ -10,7 +10,7 @@ const LOGIN = 'LOGIN';
 const REGISTRATION = 'REGISTRATION';
 const AUTH_SET_TOKEN = 'AUTH_SET_TOKEN';
 
-export interface AuthState {
+export interface IAuthState {
     isSync: boolean;
     error?: string;
     username?: string;
@@ -18,7 +18,7 @@ export interface AuthState {
     fullname?: string;
 }
 
-const initialState: AuthState = {
+const initialState: IAuthState = {
     isSync: false,
     token: null
 }
@@ -47,11 +47,6 @@ interface SetTokenAction extends Action {
     token: string
 }
 
-interface LoginSuccessResponse {
-    status: boolean;
-    token: string;
-}
-
 const setSyncAction = (isSync: boolean): SetSyncAction => ({ type: AUTH_SET_SYNC, isSync });
 
 const setTokenAction = (token: string): SetTokenAction => ({ type: AUTH_SET_TOKEN, token });
@@ -62,37 +57,38 @@ export const loginAction: ActionCreator<AppThunkAction<AuthActionTypes>> = (
     username: string,
     password: string
 ) => (dispatch: AppThunkDispatch): AuthActionTypes => {
+    setSyncAction(true);
     UserService.login(username, password)
         .then((response: AxiosResponse<SuccessAuthenticationResponse>) => {
             dispatch(setSyncAction(false));
             dispatch(setTokenAction(response.data.data));
         })
-        .catch(x => {
+        .catch(error => {
             // @TO-DO: Dispatch error
             dispatch(setSyncAction(false));
         });
-    return setSyncAction(true);
+    return dispatch(setSyncAction(true));
 }
 
-export const registrationAction: ActionCreator<AppThunkAction<AuthActionTypes>> = (
+export const registrationAction: ActionCreator<AppThunkAction<void>> = (
     username: string,
     fullname: string,
     password: string,
     confirmPassword: string
-) => (dispatch: AppThunkDispatch): AuthActionTypes => {
+) => (dispatch: AppThunkDispatch): void => {
     UserService.registration(username, fullname, password, confirmPassword)
         .then((response: AxiosResponse<SuccessAuthenticationResponse>) => {
             dispatch(setSyncAction(false));
             dispatch(setTokenAction(response.data.data));
         })
-        .catch(x => {
+        .catch(error => {
             // @TO-DO: Dispatch error
             dispatch(setSyncAction(false));
         });
-    return setSyncAction(true);
+    dispatch(setSyncAction(true));
 }
 
-export const authReducer: Reducer<AuthState, AuthActionTypes> = (state: AuthState = initialState, action: AuthActionTypes): AuthState => {
+export const authReducer: Reducer<IAuthState, AuthActionTypes> = (state: IAuthState = initialState, action: AuthActionTypes): IAuthState => {
     switch (action.type) {
         case LOGIN:
             return {

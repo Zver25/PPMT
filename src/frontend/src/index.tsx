@@ -1,15 +1,15 @@
 import React from 'react';
+import {Provider} from "react-redux";
 import ReactDOM from 'react-dom';
-import {Router, Route, Redirect, Switch} from 'react-router-dom';
+import {createBrowserHistory} from "history";
+import {Redirect, Route, Router, Switch} from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 import AuthPage from "./components/AuthPage";
 import DashboardPage from "./components/DashboardPage";
-import {createBrowserHistory} from "history";
 
 import store from "./store";
 
 import './index.css';
-import {Provider} from "react-redux";
 
 const history = createBrowserHistory();
 

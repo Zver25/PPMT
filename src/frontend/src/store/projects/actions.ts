@@ -110,7 +110,7 @@ export const fetchProjectsThunkCreator: ActionCreator<AppThunkAction<IProjectsAc
                 }
             })
             .catch((error) => errorCatcher(error, dispatch));
-        return fetchProjects();
+        return dispatch(fetchProjects());
     }
 
 export const updateProjectThunkCreator: ActionCreator<AppThunkAction<IProjectsActionTypes>> = (project: IProject) =>
@@ -125,7 +125,7 @@ export const updateProjectThunkCreator: ActionCreator<AppThunkAction<IProjectsAc
                 }
             })
             .catch((error) => errorCatcher(error, dispatch));
-        return updateProject(project);
+        return dispatch(updateProject(project));
     }
 
 export const deleteProjectThunkCreator: ActionCreator<AppThunkAction<IProjectsActionTypes>> = (id: number) =>
@@ -140,7 +140,7 @@ export const deleteProjectThunkCreator: ActionCreator<AppThunkAction<IProjectsAc
                 }
             })
             .catch((error) => errorCatcher(error, dispatch));
-        return deleteProject(id);
+        return dispatch(deleteProject(id));
     }
 
 export type IProjectsActionTypes = IProjectsRequestFailAction |
