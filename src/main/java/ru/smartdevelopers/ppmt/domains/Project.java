@@ -1,5 +1,6 @@
 package ru.smartdevelopers.ppmt.domains;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -15,8 +16,10 @@ public class Project {
     private Long id;
     private String title;
     private String description;
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date createdAt;
-    private Date completeAt;
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
+    private Date completedAt;
 
     // When will be created users
     @ManyToOne(fetch = FetchType.LAZY)
@@ -55,13 +58,13 @@ public class Project {
         this.createdAt = createdAt;
     }
 
-    public Date getCompleteAt() {
-        return completeAt;
+    public Date getCompletedAt() {
+        return completedAt;
     }
 
-    public void setCompleteAt(Date completeAt) {
+    public void setCompletedAt(Date completeAt) {
 
-        this.completeAt = completeAt;
+        this.completedAt = completeAt;
     }
 
     public String getDescription() {
@@ -71,4 +74,10 @@ public class Project {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @PrePersist
+    protected void onCreate(){
+        this.createdAt = new Date();
+    }
+
 }
