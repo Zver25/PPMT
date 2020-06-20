@@ -21,7 +21,7 @@ export const ProjectList: FC<IProjectListProps> = ({projects, onChange, onDelete
             { projects.isSync === 0
                 ? <div className="spinner-border"/>
                 : <ul className="list-group list-group-flush">
-                    {projects.list.map((project: IProject) =>
+                    {projects.list.sort((a: IProject, b: IProject) => (a.createdAt || 0) - (b.createdAt || 0)).map((project: IProject) =>
                         <ProjectItem
                             key={project.id}
                             project={project}
