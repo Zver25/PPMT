@@ -2,6 +2,7 @@ import React from 'react';
 import {Provider} from "react-redux";
 import ReactDOM from 'react-dom';
 import {createBrowserHistory} from "history";
+import axios from "axios";
 import {Redirect, Route, Router, Switch} from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 import AuthPage from "./components/AuthPage";
@@ -10,6 +11,9 @@ import DashboardPage from "./components/DashboardPage";
 import store from "./store";
 
 import './index.css';
+
+axios.defaults.responseType = "json";
+axios.defaults.headers["Content-Type"] = "application/json";
 
 const history = createBrowserHistory();
 
