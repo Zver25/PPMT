@@ -15,7 +15,7 @@ export class ProjectService extends BaseService {
 
     public static store(project: IProject): Promise<AxiosResponse<ProjectResponse>> {
         let url = this.getApiUrl();
-        if (project.id && project.id > 0) {
+        if (project.id > 0) {
             url += '/' + project.id;
             return axios.put(url, JSON.stringify(project));
         }
