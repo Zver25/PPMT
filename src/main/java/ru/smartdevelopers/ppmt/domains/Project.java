@@ -75,6 +75,13 @@ public class Project {
         this.description = description;
     }
 
+    public Project update(Project project) {
+        this.title = project.title;
+        this.description = project.description;
+        this.completedAt = project.completedAt;
+        return this;
+    }
+
     @PrePersist
     protected void onCreate(){
         this.createdAt = new Date();

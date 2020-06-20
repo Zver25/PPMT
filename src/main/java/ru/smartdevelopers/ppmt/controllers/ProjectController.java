@@ -65,10 +65,13 @@ public class ProjectController {
 
 
     @PutMapping("{project}")
-    public ResponseEntity<ResponsePayload<Project>> update(@PathVariable Project project, Principal principal) {
+    public ResponseEntity<ResponsePayload<Project>> update(
+            @PathVariable Project project,
+            @RequestBody Project projectPatch,
+            Principal principal) {
         User user = userService.findByUsername(principal.getName());
         if(project != null && project.getCreatedBy().getId().equals(user.getId())) {
-            Project updatedProject = projectService.update(project);
+            Project updatedProject = projectService.update(project.update(projectPatch));
             ResponsePayload<Project> payload = (new ResponsePayload<Project>()).setDataPayload(updatedProject);
             return new ResponseEntity<>(payload, HttpStatus.OK);
         }
