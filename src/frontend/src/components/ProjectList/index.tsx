@@ -1,6 +1,10 @@
-import React, {FC} from "react";
+import React, {FC, Fragment, useState} from "react";
 import {IProjectsState} from "../../store/projects/state";
 import IProject from "../../models/Project";
+import {ProjectItem} from "./ProjectItem";
+import {EditProject} from "../EditProject";
+
+import "./style.css";
 
 export interface IProjectListProps {
     projects: IProjectsState,
@@ -9,14 +13,35 @@ export interface IProjectListProps {
     onSelected: (id: number) => void;
 }
 
-export const ProjectList: FC<IProjectListProps> = ({projects, onChange, onDelete, onSelected})  => (
-    <ul className="list-group list-group-flush">
-        { projects.list.map((project: IProject) =>
-            <li onClick={() => project.id ? onSelected(project.id): null}
-                className={"list-group-item list-group-item-action" + (project.id === projects.selectedProjectId? 'list-group-item-active' : '')}
-            >
-                {project.title}
-            </li>)
-        }
-    </ul>
-);
+export const ProjectList: FC<IProjectListProps> = ({projects, onChange, onDelete, onSelected}) => {
+    const [showForm, setShowForm] = useState(false);
+
+    return (
+        <Fragment>
+            { projects.isSync === 0
+                ? <div className="spinner-border"/>
+                : <ul className="list-group list-group-flush">
+                    {projects.list.map((project: IProject) =>
+                        <ProjectItem
+                            key={project.id}
+                            project={project}
+                            isSelected={project.id === projects.selectedProjectId}
+                            isLoaded={project.id === projects.isSync}
+                            onChange={onChange}
+                            onDelete={onDelete}
+                            onSelected={onSelected}/>
+                    )}
+                </ul>
+            }
+            <div className="project-list-bottom">
+                { showForm
+                    ? <EditProject
+                        value=""
+                        onAccept={(title: string) => {setShowForm(false); onChange({id: 0, title})}}
+                        onCancel={() => {setShowForm(false)}}/>
+                    : <div className="btn btn-block btn-primary" onClick={() => setShowForm(true)}>Add project</div>
+                }
+            </div>
+        </Fragment>
+    );
+}

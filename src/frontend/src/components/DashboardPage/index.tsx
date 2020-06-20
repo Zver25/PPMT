@@ -46,7 +46,7 @@ const mapDispatchToProps = (dispatch: AppThunkDispatch): IDashboardDispatchProps
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
-class DashboardPage extends React.Component<IDashboardPageAllProps, IDashboardPageState>{
+class DashboardPage extends React.Component<IDashboardPageAllProps, IDashboardPageState> {
 
     componentDidMount() {
         this.props.fetchProjects();
@@ -60,10 +60,11 @@ class DashboardPage extends React.Component<IDashboardPageAllProps, IDashboardPa
                     <div className="col-4">
                         <div className="card">
                             <div className="card-body">
-                                <ProjectList projects={projects}
-                                             onChange={(project) => {}}
-                                             onDelete={(id) => {}}
-                                             onSelected={id => {}}
+                                <ProjectList
+                                    projects={projects}
+                                    onChange={this.props.updateProject}
+                                    onDelete={this.props.deleteProject}
+                                    onSelected={this.props.selectProject}
                                 />
                             </div>
                         </div>

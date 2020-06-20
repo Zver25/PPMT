@@ -88,8 +88,8 @@ const deleteProjectSuccess = (id: number): IProjectDeleteSuccessAction => ({
     id
 });
 
-export const selectProject = (id: number): IProjectDeleteSuccessAction => ({
-    type: PROJECT_DELETE_SUCCESS,
+export const selectProject = (id: number): IProjectSelectAction => ({
+    type: PROJECT_SELECT,
     id
 });
 
