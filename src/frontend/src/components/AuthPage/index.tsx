@@ -1,4 +1,4 @@
-import React, {ChangeEvent} from 'react';
+import React, {ChangeEvent, MouseEvent} from 'react';
 import {connect} from "react-redux";
 import {ThunkDispatch} from "redux-thunk";
 import { Redirect, RouteComponentProps } from 'react-router-dom';
@@ -68,14 +68,16 @@ class AuthPage extends React.Component<AuthPageAllProps, AuthPageState> {
         this.setState({confirmPassword: e.target.value});
     }
 
-    handleLogin = () => {
+    handleLogin = (event: MouseEvent<HTMLButtonElement>): void => {
         const {username, password} = this.state;
         this.props.login(username, password);
+        event.preventDefault();
     }
 
-    handleRegistration = () => {
+    handleRegistration = (event: MouseEvent<HTMLButtonElement>): void => {
         const {username, fullname, password, confirmPassword} = this.state;
         this.props.registration(username, fullname, password, confirmPassword);
+        event.preventDefault();
     }
 
     render(): React.ReactNode {
@@ -109,9 +111,7 @@ class AuthPage extends React.Component<AuthPageAllProps, AuthPageState> {
                             <input type="checkbox" id="checkbox"/>
                             <label htmlFor="checkbox"><span className="ui"/>Keep me signed in</label>
                             */}
-                            <div className="btn-animate">
-                                <span className="btn-signin" onClick={this.handleLogin}>Sign in</span>
-                            </div>
+                            <button className="btn-animate btn-signin" onClick={this.handleLogin}>Sign In</button>
                         </form>
                         <form className={"form-signup" + (isSignUp ? " form-signup-left" : "")} action="" method="post" name="form">
                             <label htmlFor="fullname">Full name</label>
@@ -126,9 +126,7 @@ class AuthPage extends React.Component<AuthPageAllProps, AuthPageState> {
                             <label htmlFor="confirmpassword">Confirm password</label>
                             <input className="form-styling" type="password" name="confirmpassword"
                                    value={confirmPassword} onChange={this.handleChangeConfirmPassword}/>
-                            <div className="btn-animate">
-                                <span className="btn-signup" onClick={this.handleRegistration}>Sign Up</span>
-                            </div>
+                            <button className="btn-animate btn-signin" onClick={this.handleRegistration}>Sign Up</button>
                         </form>
                     </div>
                     {/*
