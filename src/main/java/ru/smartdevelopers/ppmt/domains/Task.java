@@ -1,22 +1,26 @@
 package ru.smartdevelopers.ppmt.domains;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "Tasks")
+@Table(name = "tasks")
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String description;
-    private Date cratedAt;
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
+    private Date createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date completedAt;
     @ManyToOne(fetch = FetchType.LAZY)
     private User createdBy;
     @ManyToOne(fetch = FetchType.LAZY)
-    private Project projectId;
+    private Project project;
 
     public Long getId() {
         return id;
@@ -42,12 +46,12 @@ public class Task {
         this.description = description;
     }
 
-    public Date getCratedAt() {
-        return cratedAt;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCratedAt(Date cratedAt) {
-        this.cratedAt = cratedAt;
+    public void setCreatedAt(Date cratedAt) {
+        this.createdAt = cratedAt;
     }
 
     public Date getCompletedAt() {
@@ -66,12 +70,24 @@ public class Task {
         this.createdBy = createdBy;
     }
 
-    public Project getProjectId() {
-        return projectId;
+    public Project getProject() {
+        return project;
     }
 
-    public void setProjectId(Project projectId) {
-        this.projectId = projectId;
+    public void setProject(Project projectId) {
+        this.project = projectId;
+    }
+
+    public Task update(Task task) {
+        this.title = task.title;
+        this.description = task.description;
+        this.completedAt = task.completedAt;
+        return this;
+    }
+
+    @PrePersist
+    protected void onCreate(){
+        this.createdAt = new Date();
     }
 
 }

@@ -10,8 +10,7 @@ import ru.smartdevelopers.ppmt.payloads.ResponsePayload;
 import ru.smartdevelopers.ppmt.services.TaskService;
 import ru.smartdevelopers.ppmt.services.UserService;
 import java.security.Principal;
-
-// Без привязки к проектам.
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -28,6 +27,13 @@ public class TaskController {
     @Autowired
     public void setTaskService(TaskService taskService) {
         this.taskService = taskService;
+    }
+
+    @GetMapping
+    public ResponseEntity<ResponsePayload<List<Task>>> getAllTask(Principal principal) {
+        ResponsePayload<List<Task>> taskResponsePayload = new ResponsePayload<>();
+        taskResponsePayload.setDataPayload(taskService.findAllByUser(principal.getName()));
+        return new ResponseEntity<>(taskResponsePayload, HttpStatus.OK);
     }
 
     @GetMapping("{task}")
@@ -54,26 +60,31 @@ public class TaskController {
     }
 
     @PutMapping("{task}")
-    public ResponseEntity<ResponsePayload<Task>> update(@PathVariable Task task, Principal principal) {
+    public ResponseEntity<ResponsePayload<Task>> update(
+            @PathVariable Task task,
+            @RequestBody Task taskPatch,
+            Principal principal
+    ) {
         User user = userService.findByUsername(principal.getName());
         if (task != null && task.getCreatedBy().getId().equals(user.getId())) {
-            Task updateTask = taskService.update(task);
-            ResponsePayload<Task> payload = (new ResponsePayload<Task>()).setDataPayload(updateTask);
+            Task updatedTask = taskService.update(task.update(taskPatch));
+            ResponsePayload<Task> payload = (new ResponsePayload<Task>()).setDataPayload(updatedTask);
             return new ResponseEntity<>(payload, HttpStatus.OK);
         }
         ResponsePayload<Task> payload = (new ResponsePayload<Task>()).setErrorPayload("Cant update task");
         return new ResponseEntity<>(payload, HttpStatus.OK);
     }
 
-    //TODO LONG??
     @DeleteMapping("{task}")
-    public ResponseEntity<ResponsePayload<Task>> delete(@PathVariable Task task, Principal principal) {
+    public ResponseEntity<ResponsePayload<Long>> delete(@PathVariable Task task, Principal principal) {
         User user = userService.findByUsername(principal.getName());
         if (task != null && task.getCreatedBy().getId().equals(user.getId())) {
             taskService.delete(task);
-            return new ResponseEntity<>(HttpStatus.OK);
+            ResponsePayload<Long> payload = (new ResponsePayload<Long>()).setDataPayload(task.getId());
+            return new ResponseEntity<>(payload, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        ResponsePayload<Long> payload = (new ResponsePayload<Long>()).setErrorPayload("Cant delete task");
+        return new ResponseEntity<>(payload, HttpStatus.OK);
     }
 
 }

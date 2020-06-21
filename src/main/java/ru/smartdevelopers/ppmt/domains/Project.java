@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import java.util.Date;
 
 @Entity
+@Table(name = "projects")
 public class Project {
 
     @Id
@@ -20,8 +21,6 @@ public class Project {
     private Date createdAt;
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date completedAt;
-
-    // When will be created users
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     private User createdBy;
