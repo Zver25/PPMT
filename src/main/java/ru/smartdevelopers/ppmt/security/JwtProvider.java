@@ -23,7 +23,6 @@ public class JwtProvider {
         Date now = new Date(System.currentTimeMillis());
         Date expiredDate = new Date(now.getTime() + EXPIRATION_TOKEN_TIME);
         String userId = Long.toString(user.getId());
-
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userId);
         claims.put("username", user.getUsername());

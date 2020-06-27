@@ -12,7 +12,6 @@ import ru.smartdevelopers.ppmt.domains.User;
 import ru.smartdevelopers.ppmt.payloads.LoginUserRequest;
 import ru.smartdevelopers.ppmt.payloads.RegisterUserRequest;
 import ru.smartdevelopers.ppmt.payloads.ResponsePayload;
-import ru.smartdevelopers.ppmt.payloads.SuccessLoginResponse;
 import ru.smartdevelopers.ppmt.security.JwtProvider;
 import ru.smartdevelopers.ppmt.services.UserService;
 

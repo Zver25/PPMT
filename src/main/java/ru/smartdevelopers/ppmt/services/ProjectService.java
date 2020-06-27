@@ -12,9 +12,7 @@ import java.util.List;
 @Service
 public class ProjectService {
 
-
     private ProjectRepository projectRepository;
-
     private UserRepository userRepository;
 
     @Autowired
@@ -30,6 +28,10 @@ public class ProjectService {
     public List<Project> findAllByUser(String username) {
         User user = userRepository.findByUsername(username);
         return projectRepository.findAllByCreatedBy(user);
+    }
+
+    public Project findById(Long projectId) {
+        return projectRepository.findAllById(projectId);
     }
 
     public Project create (Project project, User user){

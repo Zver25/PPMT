@@ -26,7 +26,7 @@ public class TaskService {
         this.userRepository = userRepository;
     }
 
-    public Task create(Task task, User user){
+    public Task create(Task task, User user) {
         task.setCreatedBy(user);
         return taskRepository.save(task);
     }

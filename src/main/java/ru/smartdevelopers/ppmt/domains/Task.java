@@ -19,6 +19,7 @@ public class Task {
     private Date completedAt;
     @ManyToOne(fetch = FetchType.LAZY)
     private User createdBy;
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     @ManyToOne(fetch = FetchType.LAZY)
     private Project project;
 

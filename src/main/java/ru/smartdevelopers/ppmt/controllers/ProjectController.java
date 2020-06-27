@@ -8,10 +8,12 @@ import ru.smartdevelopers.ppmt.domains.Project;
 import ru.smartdevelopers.ppmt.domains.Task;
 import ru.smartdevelopers.ppmt.domains.User;
 import ru.smartdevelopers.ppmt.payloads.ResponsePayload;
+import ru.smartdevelopers.ppmt.payloads.TaskPayload;
 import ru.smartdevelopers.ppmt.services.ProjectService;
 import ru.smartdevelopers.ppmt.services.TaskService;
 import ru.smartdevelopers.ppmt.services.UserService;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -51,19 +53,23 @@ public class ProjectController {
             ResponsePayload<Project> payload = (new ResponsePayload<Project>()).setDataPayload(project);
             return new ResponseEntity<>(payload, HttpStatus.OK);
         }
-        ResponsePayload<Project> payload = (new ResponsePayload<Project>()).setErrorPayload("Project not fount");
+        ResponsePayload<Project> payload = (new ResponsePayload<Project>()).setErrorPayload("Project not found");
         return new ResponseEntity<>(payload, HttpStatus.OK);
     }
 
     @GetMapping("{project}/tasks")
-    public ResponseEntity<ResponsePayload<List<Task>>> fetchTasks(@PathVariable Project project, Principal principal) {
+    public ResponseEntity<ResponsePayload<List<TaskPayload>>> fetchTasks(@PathVariable Project project, Principal principal) {
         User user = userService.findByUsername(principal.getName());
         if (project != null && project.getCreatedBy().getId().equals(user.getId())) {
-            ResponsePayload<List<Task>> tasksResponsePayload =
-                    (new ResponsePayload<List<Task>>()).setDataPayload(taskService.findByProject(project));
+            List<TaskPayload> tasksPayload = new ArrayList<>();
+            for (Task task : taskService.findByProject(project)) {
+                tasksPayload.add(new TaskPayload(task));
+            }
+            ResponsePayload<List<TaskPayload>> tasksResponsePayload =
+                    (new ResponsePayload<List<TaskPayload>>()).setDataPayload(tasksPayload);
             return new ResponseEntity<>(tasksResponsePayload, HttpStatus.OK);
         }
-        ResponsePayload<List<Task>> tasksResponsePayload = (new ResponsePayload<List<Task>>()).setErrorPayload("Project not found");
+        ResponsePayload<List<TaskPayload>> tasksResponsePayload = (new ResponsePayload<List<TaskPayload>>()).setErrorPayload("Project not found");
         return new ResponseEntity<>(tasksResponsePayload, HttpStatus.OK);
     }
 
