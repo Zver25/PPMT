@@ -87,7 +87,7 @@ class AuthPage extends React.Component<AuthPageAllProps, AuthPageState> {
             return <Redirect to="/projects" />;
         }
         return (
-            <div className="container">
+            <div className="main-container container">
                 <div className={"frame" + (isSignUp ? " frame-long" : "")}>
                     <div className="nav">
                         <ul className="links">

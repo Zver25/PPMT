@@ -15,7 +15,7 @@ export const TaskList: FC<TaskListProps> = ({tasks}) => (
                 <i className="fas fa-tasks"/>&nbsp;Task List
             </div>
         </div>
-        <div className="scroll-area-sm">
+        <div className="card-body">
             <PerfectScrollbar>
                 <div style={{position: "static"}} className="ps ps--active-y">
                     <div className="ps-content">

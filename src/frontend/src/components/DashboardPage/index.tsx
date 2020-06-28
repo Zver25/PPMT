@@ -13,6 +13,8 @@ import {
 import IProject from "../../models/Project";
 import {TaskList} from "../TaskList";
 
+import "./style.css";
+
 export interface IDashboardPageProps {
 
 }
@@ -56,19 +58,15 @@ class DashboardPage extends React.Component<IDashboardPageAllProps, IDashboardPa
     render(): React.ReactNode {
         const {projects} = this.props;
         return (
-            <div className="container">
-                <div className="row">
+            <div className="main-container container">
+                <div className="row" style={{ height: "100%" }}>
                     <div className="col-4">
-                        <div className="card">
-                            <div className="card-body">
-                                <ProjectList
-                                    projects={projects}
-                                    onChange={this.props.updateProject}
-                                    onDelete={this.props.deleteProject}
-                                    onSelected={this.props.selectProject}
-                                />
-                            </div>
-                        </div>
+                        <ProjectList
+                            projects={projects}
+                            onChange={this.props.updateProject}
+                            onDelete={this.props.deleteProject}
+                            onSelected={this.props.selectProject}
+                        />
                     </div>
                     <div className="col-8">
                         <TaskList tasks={[]} />

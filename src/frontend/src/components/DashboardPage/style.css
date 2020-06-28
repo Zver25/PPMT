@@ -1,0 +1,10 @@
+.main-container {
+    height: 80%;
+}
+.card {
+    height: 100%;
+}
+
+.card-body {
+    flex-grow: 1;
+}
