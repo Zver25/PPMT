@@ -11,6 +11,7 @@ import {
     updateProjectThunkCreator
 } from "../../store/projects/actions";
 import IProject from "../../models/Project";
+import {TaskList} from "../TaskList";
 
 export interface IDashboardPageProps {
 
@@ -70,11 +71,7 @@ class DashboardPage extends React.Component<IDashboardPageAllProps, IDashboardPa
                         </div>
                     </div>
                     <div className="col-8">
-                        <div className="card">
-                            <div className="card-body">
-                                Task list
-                            </div>
-                        </div>
+                        <TaskList tasks={[]} />
                     </div>
                 </div>
             </div>
