@@ -2,6 +2,7 @@ import {BaseService} from "./BaseService";
 import IProject from "../models/Project";
 import axios, { AxiosResponse } from "axios";
 import {ProjectResponse, ProjectsResponse} from "../payload/Projects";
+import {TasksPayload} from "../payload/Tasks";
 
 export class ProjectService extends BaseService {
 
@@ -11,6 +12,11 @@ export class ProjectService extends BaseService {
 
     public static fetchAll(): Promise<AxiosResponse<ProjectsResponse>> {
         return axios.get(this.getApiUrl());
+    }
+
+    public static fetchAllTasks(id: number): Promise<AxiosResponse<TasksPayload>> {
+        const url = this.getApiUrl() + "/" + id + "/tasks";
+        return axios.get(url)
     }
 
     public static store(project: IProject): Promise<AxiosResponse<ProjectResponse>> {
