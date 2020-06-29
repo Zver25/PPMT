@@ -1,6 +1,8 @@
 import {BaseService} from "./BaseService";
 import ITask from "../models/Task";
 import axios, { AxiosResponse } from "axios";
+import {TaskResponse} from "../payload/Tasks";
+import ResponsePayload from "../payload/ResponsePayload";
 
 export class TasksService extends BaseService {
 
@@ -8,7 +10,7 @@ export class TasksService extends BaseService {
         return super.getApiUrl() + '/tasks';
     }
 
-    public static store(task: ITask): Promise<AxiosResponse<ITask>> {
+    public static store(task: ITask): Promise<AxiosResponse<TaskResponse>> {
         let url = this.getApiUrl();
         if (task.id > 0) {
             url += '/' + task.id;
@@ -17,7 +19,7 @@ export class TasksService extends BaseService {
         return axios.post(url, JSON.stringify(task));
     }
 
-    public static delete(id: number): Promise<AxiosResponse<number>> {
+    public static delete(id: number): Promise<AxiosResponse<ResponsePayload<number>>> {
         return axios.delete(this.getApiUrl() + "/" + id);
     }
 

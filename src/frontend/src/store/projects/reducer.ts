@@ -25,7 +25,7 @@ export const projectsReducer: Reducer<IProjectsState, IProjectsActionTypes> = (s
         case "PROJECT_UPDATE":
             return {
                 ...state,
-                isSync: action.project.id ? action.project.id : 0
+                isSync: action.project.id ?? null
             };
         case "PROJECT_UPDATE_SUCCESS":
             return {

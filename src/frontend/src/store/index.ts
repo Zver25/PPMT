@@ -4,10 +4,13 @@ import thunk, {ThunkAction, ThunkDispatch} from "redux-thunk";
 import {AuthActionTypes, authReducer} from "./auth";
 import {projectsReducer} from "./projects/reducer";
 import {IProjectsActionTypes} from "./projects/actions";
+import {ITasksActionTypes} from "./tasks/actions";
+import {tasksReducer} from "./tasks/reducer";
 
 const rootReducer = combineReducers({
     auth: authReducer,
-    projects: projectsReducer
+    projects: projectsReducer,
+    tasks: tasksReducer,
 });
 
 declare global {
@@ -16,7 +19,7 @@ declare global {
     }
 }
 
-export type AppActions = AuthActionTypes | IProjectsActionTypes;
+export type AppActions = AuthActionTypes | IProjectsActionTypes | ITasksActionTypes;
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 export default createStore<RootState, AppActions, any, any>(rootReducer, composeEnhancers(applyMiddleware(thunk)));
