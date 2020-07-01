@@ -5,11 +5,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.smartdevelopers.ppmt.domains.Project;
+import ru.smartdevelopers.ppmt.domains.Task;
 import ru.smartdevelopers.ppmt.domains.User;
 import ru.smartdevelopers.ppmt.payloads.ResponsePayload;
+import ru.smartdevelopers.ppmt.payloads.TaskPayload;
 import ru.smartdevelopers.ppmt.services.ProjectService;
+import ru.smartdevelopers.ppmt.services.TaskService;
 import ru.smartdevelopers.ppmt.services.UserService;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -17,8 +21,8 @@ import java.util.List;
 public class ProjectController {
 
     private UserService userService;
-
     private ProjectService projectService;
+    private TaskService taskService;
 
     @Autowired
     public void setProjectService(ProjectService projectService) {
@@ -30,11 +34,15 @@ public class ProjectController {
         this.userService = userService;
     }
 
+    @Autowired
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
+    }
+
     @GetMapping
     public ResponseEntity<ResponsePayload<List<Project>>> getAllProject (Principal principal) {
-        ResponsePayload<List<Project>> projectsResponsePayload =
-                (new ResponsePayload<List<Project>>()).setDataPayload(projectService.findAllByUser(principal.getName()));
-
+        ResponsePayload<List<Project>> projectsResponsePayload = new ResponsePayload<>();
+        projectsResponsePayload.setDataPayload(projectService.findAllByUser(principal.getName()));
         return new ResponseEntity<>(projectsResponsePayload, HttpStatus.OK);
     }
 
@@ -45,16 +53,30 @@ public class ProjectController {
             ResponsePayload<Project> payload = (new ResponsePayload<Project>()).setDataPayload(project);
             return new ResponseEntity<>(payload, HttpStatus.OK);
         }
-        ResponsePayload<Project> payload = (new ResponsePayload<Project>()).setErrorPayload("Project not fount");
+        ResponsePayload<Project> payload = (new ResponsePayload<Project>()).setErrorPayload("Project not found");
         return new ResponseEntity<>(payload, HttpStatus.OK);
+    }
+
+    @GetMapping("{project}/tasks")
+    public ResponseEntity<ResponsePayload<List<TaskPayload>>> fetchTasks(@PathVariable Project project, Principal principal) {
+        User user = userService.findByUsername(principal.getName());
+        if (project != null && project.getCreatedBy().getId().equals(user.getId())) {
+            List<TaskPayload> tasksPayload = new ArrayList<>();
+            for (Task task : taskService.findByProject(project)) {
+                tasksPayload.add(new TaskPayload(task));
+            }
+            ResponsePayload<List<TaskPayload>> tasksResponsePayload =
+                    (new ResponsePayload<List<TaskPayload>>()).setDataPayload(tasksPayload);
+            return new ResponseEntity<>(tasksResponsePayload, HttpStatus.OK);
+        }
+        ResponsePayload<List<TaskPayload>> tasksResponsePayload = (new ResponsePayload<List<TaskPayload>>()).setErrorPayload("Project not found");
+        return new ResponseEntity<>(tasksResponsePayload, HttpStatus.OK);
     }
 
     @PostMapping()
     public ResponseEntity<ResponsePayload<Project>> create(@RequestBody Project project, Principal principal) {
-        // Проверка пользователя
         User user = userService.findByUsername(principal.getName());
         if (project != null && user != null) {
-            // При создании устанавливать пользователя
             Project createdProject = projectService.create(project, user);
             ResponsePayload<Project> payload = (new ResponsePayload<Project>()).setDataPayload(createdProject);
             return new ResponseEntity<>(payload, HttpStatus.CREATED);

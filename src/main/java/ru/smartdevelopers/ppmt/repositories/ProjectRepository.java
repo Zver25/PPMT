@@ -12,4 +12,6 @@ public interface ProjectRepository  extends CrudRepository <Project, Long> {
 
     List<Project> findAllByCreatedBy(User user);
 
+    Project findAllById(Long projectId);
+
 }

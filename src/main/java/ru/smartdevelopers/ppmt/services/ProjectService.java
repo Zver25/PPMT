@@ -12,9 +12,7 @@ import java.util.List;
 @Service
 public class ProjectService {
 
-
     private ProjectRepository projectRepository;
-
     private UserRepository userRepository;
 
     @Autowired
@@ -32,6 +30,10 @@ public class ProjectService {
         return projectRepository.findAllByCreatedBy(user);
     }
 
+    public Project findById(Long projectId) {
+        return projectRepository.findAllById(projectId);
+    }
+
     public Project create (Project project, User user){
         project.setCreatedBy(user);
         return projectRepository.save(project);
@@ -41,7 +43,7 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    public void delete(Project project){
+    public void delete(Project project) {
         projectRepository.delete(project);
     }
 
