@@ -42,13 +42,16 @@ public class UserController {
         this.authenticationManager = authenticationManager;
     }
 
-    private ResponseEntity<ResponsePayload<String>> authenticate(String username, String password, HttpServletResponse response) {
+    private ResponseEntity<ResponsePayload<String>> authenticate(String username, String password) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password)
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        return getResponseToken(authentication);
+    }
+
+    private ResponseEntity<ResponsePayload<String>> getResponseToken(Authentication authentication) {
         String token = jwtProvider.generate(authentication);
-        response.addCookie(new Cookie(HEADER_TOKEN, token));
         ResponsePayload<String> payload = (new ResponsePayload<String>()).setDataPayload(token);
         return new ResponseEntity<>(payload, HttpStatus.OK);
     }
@@ -59,16 +62,28 @@ public class UserController {
     }
 
     @PostMapping("registration")
-    public ResponseEntity<?> register(@RequestBody RegisterUserRequest user, HttpServletResponse response) throws Exception {
+    public ResponseEntity<?> register(@RequestBody RegisterUserRequest user) throws Exception {
         User requestUser = user.mapToUser();
         userService.create(requestUser);
 
-        return authenticate(user.getUsername(), user.getPassword(), response);
+        return authenticate(user.getUsername(), user.getPassword());
     }
 
     @PostMapping("login")
-    public ResponseEntity<?> login(@RequestBody LoginUserRequest loginUserRequest, HttpServletResponse response) {
-        return authenticate(loginUserRequest.getUsername(), loginUserRequest.getPassword(), response);
+    public ResponseEntity<?> login(@RequestBody LoginUserRequest loginUserRequest) {
+        return authenticate(loginUserRequest.getUsername(), loginUserRequest.getPassword());
+    }
+
+    @GetMapping("logout")
+    public ResponseEntity<?> logout() {
+        SecurityContextHolder.getContext().setAuthentication(null);
+        return ResponseEntity.ok("");
+    }
+
+    @GetMapping("refreshToken")
+    public ResponseEntity<ResponsePayload<String>> refreshToken() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return getResponseToken(authentication);
     }
 
 }
