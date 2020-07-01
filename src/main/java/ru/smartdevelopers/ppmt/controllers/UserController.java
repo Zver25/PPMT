@@ -12,14 +12,8 @@ import ru.smartdevelopers.ppmt.domains.User;
 import ru.smartdevelopers.ppmt.payloads.LoginUserRequest;
 import ru.smartdevelopers.ppmt.payloads.RegisterUserRequest;
 import ru.smartdevelopers.ppmt.payloads.ResponsePayload;
-import ru.smartdevelopers.ppmt.payloads.SuccessLoginResponse;
 import ru.smartdevelopers.ppmt.security.JwtProvider;
 import ru.smartdevelopers.ppmt.services.UserService;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-
-import static ru.smartdevelopers.ppmt.security.SecurityConstants.HEADER_TOKEN;
 
 @RestController
 @RequestMapping("/api/users")
