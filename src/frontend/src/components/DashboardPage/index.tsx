@@ -1,8 +1,9 @@
 import React from "react";
 import {connect, ConnectedProps} from "react-redux";
+import {RouteComponentProps, withRouter, Switch, Route} from "react-router-dom";
 
 import {IProjectsState} from "../../store/projects/state";
-import {ProjectList} from "../ProjectList";
+import {ProjectListContainer} from "../ProjectListContainer";
 import {AppThunkDispatch, RootState} from "../../store";
 import {
     deleteProjectThunkCreator,
@@ -12,11 +13,11 @@ import {
 } from "../../store/projects/actions";
 import IProject from "../../models/Project";
 import {TaskList} from "../TaskList";
+import {ProjectList} from "../ProjectListContainer/ProjectList";
 
 import "./style.css";
 
 export interface IDashboardPageProps {
-
 }
 
 interface IDashboardPageState {
@@ -34,7 +35,7 @@ interface IDashboardDispatchProps {
     selectProject: (id: number) => void;
 }
 
-type IDashboardPageAllProps = IDashboardPageProps & ConnectedProps<typeof connector>;
+type IDashboardPageAllProps = IDashboardPageProps & ConnectedProps<typeof connector> & RouteComponentProps;
 
 const mapStateToProps = (state: RootState): IDashboardStateProps => ({
     projects: state.projects
@@ -61,7 +62,7 @@ class DashboardPage extends React.Component<IDashboardPageAllProps, IDashboardPa
             <div className="main-container container">
                 <div className="row" style={{ height: "100%" }}>
                     <div className="col-4">
-                        <ProjectList
+                        <ProjectListContainer
                             projects={projects}
                             onChange={this.props.updateProject}
                             onDelete={this.props.deleteProject}
@@ -77,4 +78,4 @@ class DashboardPage extends React.Component<IDashboardPageAllProps, IDashboardPa
     }
 }
 
-export default connector(DashboardPage);
+export default connector(withRouter(DashboardPage));

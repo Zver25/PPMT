@@ -5,7 +5,8 @@ import { Redirect, RouteComponentProps } from 'react-router-dom';
 
 import './style.css';
 import {RootState} from "../../store";
-import {IAuthState, loginAction, registrationAction} from "../../store/auth";
+import {IUserState} from "../../store/users/state";
+import {loginThunkCreator, registrationThunkCreator} from "../../store/users/actions";
 
 interface AuthPageState {
     isSignUp: boolean;
@@ -21,20 +22,22 @@ interface AuthPageDispatchProps {
 }
 
 interface AuthPageStateProps {
-    auth: IAuthState,
+    user: IUserState,
 }
 
 const mapStateToProps = (state: RootState): AuthPageStateProps => ({
-    auth: state.auth,
+    user: state.user,
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<any, any, any>): AuthPageDispatchProps => ({
     login: async (username: string, password: string) => {
-        await dispatch(loginAction(username, password));
+        await dispatch(loginThunkCreator(username, password));
     },
     registration: async (username: string, fullname: string, password: string, confirmPassword: string) =>
-        await dispatch(registrationAction(username, fullname, password, confirmPassword))
+        await dispatch(registrationThunkCreator(username, fullname, password, confirmPassword))
 });
+
+type TState = {from: string} | null;
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
@@ -81,10 +84,11 @@ class AuthPage extends React.Component<AuthPageAllProps, AuthPageState> {
     }
 
     render(): React.ReactNode {
-        const { auth } = this.props;
         const { isSignUp, username, fullname, password, confirmPassword } = this.state;
-        if (auth.token !== null) {
-            return <Redirect to="/projects" />;
+        if (this.props.user.token !== '') {
+            const state: TState = (this.props.location.state as TState);
+            const location = state != null ? state.from : '/';
+            return <Redirect to={location} />;
         }
         return (
             <div className="main-container container">

@@ -1,10 +1,10 @@
 import {initialState, ITasksState} from "./state";
 import {Reducer} from "react";
-import {ITasksActionTypes} from "./actions";
+import {ITasksActions} from "./actions";
 
-export const tasksReducer: Reducer<ITasksState, ITasksActionTypes> = (
+export const tasksReducer: Reducer<ITasksState, ITasksActions> = (
     state: ITasksState = initialState,
-    action: ITasksActionTypes
+    action: ITasksActions
 ) => {
     switch (action.type) {
         case "TASKS_REQUEST_FAIL":

@@ -1,5 +1,7 @@
 package ru.smartdevelopers.ppmt.controllers;
 
+import com.sun.org.slf4j.internal.Logger;
+import com.sun.org.slf4j.internal.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +61,6 @@ public class UserController {
     public ResponseEntity<?> register(@RequestBody RegisterUserRequest user) throws Exception {
         User requestUser = user.mapToUser();
         userService.create(requestUser);
-
         return authenticate(user.getUsername(), user.getPassword());
     }
 

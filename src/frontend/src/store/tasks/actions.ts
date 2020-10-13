@@ -50,7 +50,7 @@ interface ITaskDeleteSuccessAction extends Action {
     id: number;
 }
 
-export type ITasksActionTypes =
+export type ITasksActions =
     ITaskRequestFailAction |
     ITaskFetchAllAction |
     ITaskFetchAllSuccessAction |
@@ -99,8 +99,8 @@ const errorCatcher = (error: string, dispatch: AppThunkDispatch) => {
     dispatch(taskRequestFail(error));
 }
 
-export const fetchTasksThunkCreator: ActionCreator<AppThunkAction<ITasksActionTypes>> = (projectId: number) =>
-    (dispatch: AppThunkDispatch): ITasksActionTypes => {
+export const fetchTasksThunkCreator: ActionCreator<AppThunkAction<ITasksActions>> = (projectId: number) =>
+    (dispatch: AppThunkDispatch): ITasksActions => {
         ProjectService.fetchAllTasks(projectId)
             .then((response: AxiosResponse<TasksResponse>) => {
                 if (response.status >= 200 && response.status < 300 && !response.data.hasError) {
@@ -119,8 +119,8 @@ export const fetchTasksThunkCreator: ActionCreator<AppThunkAction<ITasksActionTy
         return dispatch(fetchAllTasks(projectId));
     }
 
-export const updateTaskThunkCreator: ActionCreator<AppThunkAction<ITasksActionTypes>> = (task: ITask) =>
-    (dispatch: AppThunkDispatch): ITasksActionTypes => {
+export const updateTaskThunkCreator: ActionCreator<AppThunkAction<ITasksActions>> = (task: ITask) =>
+    (dispatch: AppThunkDispatch): ITasksActions => {
         TasksService.store(task)
             .then((response: AxiosResponse<TaskResponse>) => {
                 if (response.status >= 200 && response.status < 300 && !response.data.hasError) {
@@ -139,8 +139,8 @@ export const updateTaskThunkCreator: ActionCreator<AppThunkAction<ITasksActionTy
         return dispatch(updateTask(task));
     }
 
-export const deleteTaskThunkCreator: ActionCreator<AppThunkAction<ITasksActionTypes>> = (id: number) =>
-    (dispatch: AppThunkDispatch): ITasksActionTypes => {
+export const deleteTaskThunkCreator: ActionCreator<AppThunkAction<ITasksActions>> = (id: number) =>
+    (dispatch: AppThunkDispatch): ITasksActions => {
         TasksService.delete(id)
             .then((response: AxiosResponse<ResponsePayload<number>>) => {
                 if (response.status >= 200 && response.status < 300 && !response.data.hasError) {

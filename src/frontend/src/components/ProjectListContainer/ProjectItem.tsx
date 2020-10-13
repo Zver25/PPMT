@@ -1,20 +1,22 @@
-import React, {FC, MouseEvent, useState, Fragment} from "react";
+import React, {FC, Fragment, MouseEvent, useState} from "react";
+import {Link, useParams} from "react-router-dom";
 import IProject from "../../models/Project";
 
 import "./ProjectItem.css";
 import {EditProject} from "../EditProject";
 
 export interface IProjectItemProps {
+    baseUrl: string;
     project: IProject;
-    isSelected: boolean;
     isLoaded: boolean;
     onChange: (project: IProject) => void;
     onDelete: (id: number) => void;
     onSelected: (id: number) => void;
 }
 
-export const ProjectItem: FC<IProjectItemProps> = ({project, isSelected,isLoaded, onSelected, onChange, onDelete})  => {
+export const ProjectItem: FC<IProjectItemProps> = ({baseUrl,project, isLoaded, onSelected, onChange, onDelete}) => {
     const [showEdit, setShowEdit] = useState(false);
+    const {projectId} = useParams();
 
     const handleEdit = (event: MouseEvent<HTMLDivElement>): void => {
         setShowEdit(true);
@@ -28,19 +30,29 @@ export const ProjectItem: FC<IProjectItemProps> = ({project, isSelected,isLoaded
         event.stopPropagation();
     }
 
-    return (
-        <li onClick={() => project.id ? onSelected(project.id) : null}
-            className={"project-item list-group-item list-group-item-action" + (isSelected ? " active" : "")}
+    const isSelected = parseInt(projectId) === project.id;
+
+    return isLoaded
+        ? <div className="project-spinner">
+            <div className="spinner-border"/>
+        </div>
+        : <li onClick={() => project.id ? onSelected(project.id) : null}
+              className={"project-item list-group-item list-group-item-action" + (isSelected ? " active" : "")}
         >
-            { showEdit
+            {showEdit
                 ? <div className="edit-container">
                     <EditProject
                         value={project.title}
-                        onAccept={(title: string) => {onChange({...project, title}); setShowEdit(false);}}
-                        onCancel={() => {setShowEdit(false)}} />
+                        onAccept={(title: string) => {
+                            onChange({...project, title});
+                            setShowEdit(false);
+                        }}
+                        onCancel={() => {
+                            setShowEdit(false)
+                        }}/>
                 </div>
                 : <Fragment>
-                    {project.title}
+                    <Link to={`${baseUrl}/${project.id}`}>{project.title}</Link>
                     <div className="project-buttons">
                         <div className="edit btn btn-success" onClick={handleEdit}>
                             <i className="fas fa-pencil-alt"/>
@@ -51,12 +63,6 @@ export const ProjectItem: FC<IProjectItemProps> = ({project, isSelected,isLoaded
                     </div>
                 </Fragment>
             }
-            {isLoaded &&
-            <div className="project-spinner">
-                <div className="spinner-border"/>
-            </div>
-            }
         </li>
-
-    );
+        ;
 };

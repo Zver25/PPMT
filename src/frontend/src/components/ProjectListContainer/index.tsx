@@ -1,20 +1,20 @@
 import React, {FC, useState} from "react";
-import PerfectScrollbar from "react-perfect-scrollbar";
+
 import {IProjectsState} from "../../store/projects/state";
 import IProject from "../../models/Project";
-import {ProjectItem} from "./ProjectItem";
 import {EditProject} from "../EditProject";
+import {ProjectList} from "./ProjectList";
 
 import "./style.css";
 
-export interface IProjectListProps {
+interface IProjectListContainerProps {
     projects: IProjectsState,
     onChange: (project: IProject) => void;
     onDelete: (id: number) => void;
     onSelected: (id: number) => void;
 }
 
-export const ProjectList: FC<IProjectListProps> = ({projects, onChange, onDelete, onSelected}) => {
+export const ProjectListContainer: FC<IProjectListContainerProps> = ({projects, onChange, onDelete, onSelected}) => {
     const [showForm, setShowForm] = useState(false);
 
     return (
@@ -27,20 +27,7 @@ export const ProjectList: FC<IProjectListProps> = ({projects, onChange, onDelete
             <div className="card-body">
                 { projects.isSync === 0
                     ? <div className="spinner-border"/>
-                    : <PerfectScrollbar>
-                        <ul className="list-group list-group-flush">
-                            {projects.list.sort((a: IProject, b: IProject) => (a.createdAt || 0) - (b.createdAt || 0)).map((project: IProject) =>
-                                <ProjectItem
-                                    key={project.id}
-                                    project={project}
-                                    isSelected={project.id === projects.selectedProjectId}
-                                    isLoaded={project.id === projects.isSync}
-                                    onChange={onChange}
-                                    onDelete={onDelete}
-                                    onSelected={onSelected}/>
-                            )}
-                        </ul>
-                    </PerfectScrollbar>
+                    : <ProjectList projects={projects} onChange={onChange} onDelete={onDelete} onSelected={onSelected} />
                 }
             </div>
             <div className="card-footer project-list-bottom">

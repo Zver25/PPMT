@@ -1,4 +1,4 @@
-import React, {FC, Fragment} from "react";
+import React, {FC} from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import ITask from "../../models/Task";
 import {TaskItem} from "./TaskItem";

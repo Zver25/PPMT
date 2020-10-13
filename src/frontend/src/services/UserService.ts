@@ -11,18 +11,18 @@ export default class UserService extends BaseService{
     }
 
     public static isAuthenticated(): boolean {
-        return this.token !== '';
+        return UserService.token !== '';
     }
 
     private static setGlobalTokenMiddleware(response: AxiosResponse<SuccessAuthenticationResponse>): AxiosResponse<SuccessAuthenticationResponse> {
         axios.defaults.headers.common['Authentication'] = response.data.data;
-        this.token = response.data.data;
+        UserService.token = response.data.data;
         return response;
     }
 
     private static clearTokenMiddleware(response: AxiosResponse): AxiosResponse {
         delete axios.defaults.headers.common['Authentication'];
-        this.token = '';
+        UserService.token = '';
         return response
     }
 
