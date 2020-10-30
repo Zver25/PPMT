@@ -32,7 +32,7 @@ public class TaskMessageService {
         return taskMessageRepository.findAllByTaskId(task);
     }
 
-    public TaskMessage create(TaskMessage taskMessage, User user, Task task) {
+    public TaskMessage create(TaskMessage taskMessage, User user) {
         taskMessage.setCreatedBy(user);
         return taskMessageRepository.save(taskMessage);
     }

@@ -19,7 +19,7 @@ public class TaskMessage {
     @ManyToOne(fetch = FetchType.LAZY)
     private User createdBy;
     @ManyToOne(fetch = FetchType.LAZY)
-    private Task taskId;
+    private Task task;
 
     public Long getId() {
         return id;
@@ -61,11 +61,27 @@ public class TaskMessage {
         this.createdBy = createdBy;
     }
 
-    public Task getTaskId() {
-        return taskId;
+    public Task getTask() {
+        return task;
     }
 
-    public void setTaskId(Task taskId) {
-        this.taskId = taskId;
+    public void setTask(Task taskId) {
+        this.task = taskId;
     }
+
+    public TaskMessage update (TaskMessage taskMessage) {
+        this.text = taskMessage.text;
+        this.modifiedAt = taskMessage.modifiedAt;
+        return this;
+    }
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.modifiedAt = new Date();
+    }
+
 }
